@@ -7,8 +7,6 @@ browser.runtime.onInstalled.addListener((): void => {
   console.log('Extension installed')
 })
 
-console.debug('hot reloaded')
-
 let previousTabId = 0
 
 // communication example: send previous tab title from background page
