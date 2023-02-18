@@ -30,15 +30,15 @@ export async function getManifest() {
       128: './assets/icon-512.png',
     },
     permissions: [
-      "identity",
-      "storage",
-      "history",
-      "contextMenus",
-      "activeTab",
-      "scripting",
-      "tabs",
+      'identity',
+      'storage',
+      'history',
+      'contextMenus',
+      'activeTab',
+      'scripting',
+      'tabs',
     ],
-    host_permissions: ['*://*/*'],
+    host_permissions: ['<all_urls>'],
     content_scripts: [
       {
         matches: ['http://*/*', 'https://*/*'],
