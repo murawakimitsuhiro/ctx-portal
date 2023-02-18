@@ -1,8 +1,8 @@
 import type { Tabs } from 'webextension-polyfill'
 import browser from 'webextension-polyfill'
-import { onMessage, sendMessage } from 'webext-bridge'
-import { capturedImg } from '~/logic';
-import { MessageType } from '../logic/message';
+import { onMessage } from 'webext-bridge'
+import { capturedLog } from '~/logic'
+import { MessageType } from '../logic/message'
 
 browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
@@ -34,11 +34,23 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
   // sendMessage('tab-prev', { title: tab.title }, { context: 'content-script', tabId })
 })
 
-onMessage(MessageType.UserActivity, ({ data }) => {
-// eslint-disable-next-line no-console
-  console.log('UserActivity ', data)
-  browser.tabs.captureVisibleTab()
-    .then(screenshot => capturedImg.value = screenshot)
+onMessage(MessageType.UserActivity, async (_) => {
+  const currentTab = await browser.tabs.query({
+    active: true,
+    lastFocusedWindow: true,
+  })
+  const captureImg = await browser.tabs.captureVisibleTab()
+
+  const newLog = {
+    img: captureImg,
+    url: currentTab[0].url ?? '<unk>',
+    title: currentTab[0].title ?? '<unk>',
+    datetime: new Date(),
+    displayText: '',
+    inputText: '',
+  }
+  console.debug(newLog)
+  capturedLog.value = newLog
 })
 
 // onMessage('get-current-tab', async () => {
