@@ -11,6 +11,13 @@ import { MessageType } from '~/pkg/const/message'
   // sendMessage('tab-prev', { title: tab.title }, { context: 'content-script', tabId }
 
   sendMessage(MessageType.UserActivity, { data: 'test' })
+    .then(vale => {
+      console.debug(vale)
+    })
+    .catch(err => {
+      console.debug('sendMessage error')
+      console.error(err)
+    })
 
   // mount component to context window
   // const container = document.createElement('div')

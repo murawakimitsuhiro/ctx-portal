@@ -1,7 +1,9 @@
+import type { ProtocolWithReturn } from 'webext-bridge'
+
 export const MessageType = {
   UserActivity: 'user-activity',
 } as const
 
 export interface MessageDataType {
-  [MessageType.UserActivity]: { action: string }
+  [MessageType.UserActivity]: ProtocolWithReturn<{ action: string }, { capturedImg: string }>
 }
