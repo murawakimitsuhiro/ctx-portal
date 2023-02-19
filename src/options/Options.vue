@@ -33,11 +33,13 @@ import { capturedLog } from '~/logic'
             </div>
             <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt class="text-sm font-medium text-gray-500">OCR text</dt>
-              <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ capturedLog.displayText }}</dd>
+              <dd class="max-h-60 overflow-scroll mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                {{ capturedLog.displayText }}
+              </dd>
             </div>
           </dl>
         </div>
-        <img :src="capturedLog.img" class="max-w-120" alt="extension icon">
+        <img :src="capturedLog.img" class="max-w-120 object-contain" alt="extension icon">
       </div>
     </div>
   </main>

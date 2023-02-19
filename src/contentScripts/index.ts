@@ -1,16 +1,15 @@
 /* eslint-disable no-console */
 import { sendMessage } from 'webext-bridge'
+import { capturedLog } from '~/logic';
 import { MessageType } from '~/pkg/const/message'
 import TesseractService from '~/pkg/service/ocr';
 
 (() => {
   sendMessage(MessageType.UserActivity, { action: 'test' })
     .then(({ capturedImg }) => {
-      if (!capturedImg)
-        return
-      return TesseractService.shared().recognize(capturedImg)
+      if (capturedImg)
+        return loggingByCapturedImage(capturedImg)
     })
-    .then(text => console.log('OCR result: ', text))
     .catch(err => console.error('sendMessage: UserActivity error', err))
 
   // mount component to context window
@@ -25,3 +24,17 @@ import TesseractService from '~/pkg/service/ocr';
   // document.body.appendChild(container)
   // createApp(App).mount(root)
 })()
+
+async function loggingByCapturedImage(img: string) {
+  // const { data: { lines, text, words, symbols } } = await TesseractService.shared().recognize(img)
+  const { data: { text } } = await TesseractService.shared().recognize(img)
+
+  capturedLog.value = {
+    img,
+    url: document.URL,
+    title: document.title,
+    datetime: new Date(),
+    displayText: text,
+    inputText: '',
+  }
+}

@@ -20,13 +20,4 @@ export const captureVisibleIfTabActive = async (tabId: number) => {
   if (!tab.active)
     return
   return await browser.tabs.captureVisibleTab()
-
-  // capturedLog.value = {
-  //   img: captureImg,
-  //   url: tab.url ?? '<unk>',
-  //   title: tab.title ?? '<unk>',
-  //   datetime: new Date(),
-  //   displayText: '',
-  //   inputText: '',
-  // }
 }
