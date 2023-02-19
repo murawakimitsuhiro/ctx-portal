@@ -5,5 +5,5 @@ export const MessageType = {
 } as const
 
 export interface MessageDataType {
-  [MessageType.UserActivity]: ProtocolWithReturn<{ action: string }, { capturedImg: string }>
+  [MessageType.UserActivity]: ProtocolWithReturn<{ action: string }, { capturedImg: string | null }>
 }
