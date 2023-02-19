@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 import { onMessage } from 'webext-bridge'
-import { capturedLog } from '~/logic'
+import { captureCurrentTab } from '~/logic'
 import { MessageType } from '~/pkg/const/message'
 
 browser.runtime.onInstalled.addListener((): void => {
@@ -34,22 +34,26 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
 })
 
 onMessage(MessageType.UserActivity, async (_) => {
-  const currentTab = await browser.tabs.query({
-    active: true,
-    lastFocusedWindow: true,
-  })
-  const captureImg = await browser.tabs.captureVisibleTab()
-
-  const newLog = {
-    img: captureImg,
-    url: currentTab[0].url ?? '<unk>',
-    title: currentTab[0].title ?? '<unk>',
-    datetime: new Date(),
-    displayText: '',
-    inputText: '',
-  }
-  console.debug(newLog)
-  capturedLog.value = newLog
+  // const currentTab = await browser.tabs.query({
+  //   active: true,
+  //   lastFocusedWindow: true,
+  // })
+  // const captureImg = await browser.tabs.captureVisibleTab()
+  //
+  // const newLog = {
+  //   img: captureImg,
+  //   url: currentTab[0].url ?? '<unk>',
+  //   title: currentTab[0].title ?? '<unk>',
+  //   datetime: new Date(),
+  //   displayText: '',
+  //   inputText: '',
+  // }
+  // console.debug(newLog)
+  // capturedLog.value = newLog
+  captureCurrentTab()
+    .catch((err) => {
+      console.error(err)
+    })
 })
 
 // onMessage('get-current-tab', async () => {

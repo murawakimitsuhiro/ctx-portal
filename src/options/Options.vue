@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { capturedLog } from '~/logic'
-
-// const title = computed(() => {
-//   console.debug(capturedLog)
-//   return capturedLog.value?.title ?? 'no title'
-// })
+// import TesseractService from '~/pkg/service/ocr';
+//
+// // const title = computed(() => {
+// //   console.debug(capturedLog)
+// //   return capturedLog.value?.title ?? 'no title'
+// // })
+// const tsract = new TesseractService()
+// const text = await tsract.recognize('hoge')
+// console.debug('text ! ', text)
 </script>
 
 <template>
