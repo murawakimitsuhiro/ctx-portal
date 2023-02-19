@@ -1,19 +1,33 @@
 <script setup lang="ts">
 import { capturedLog } from '~/logic'
-// import TesseractService from '~/pkg/service/ocr';
-//
-const title = computed(() => {
-  console.debug(capturedLog)
-  return capturedLog.value?.title ?? 'no title'
+import { supabase } from '~/pkg/service/supabase'
+
+// const title = computed(() => {
+//   console.debug(capturedLog)
+//   return capturedLog.value?.title ?? 'no title'
+// })
+
+const countries = ref<any[]>([])
+
+async function getCountries() {
+  const { data } = await supabase.from('countries').select()
+  countries.value = data ?? []
+}
+
+onMounted(() => {
+  getCountries()
 })
-// const tsract = new TesseractService()
-// const text = await tsract.recognize('hoge')
-// console.debug('text ! ', text)
 </script>
 
 <template>
   <main class="px-4 py-4 text-gray-700 dark:text-gray-200">
     <h2 class="text-lg font-bold">Debug View {{ title }}</h2>
+
+    <ul>
+      <li v-for="country in countries" :key="country.id">
+        {{ country.name }}
+      </li>
+    </ul>
 
     <div class="overflow-hidden bg-white shadow sm:rounded-lg my-6">
       <div class="px-4 py-5 sm:px-6">

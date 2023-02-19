@@ -6,6 +6,7 @@ import { MessageType } from '~/pkg/const/message'
 browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
   console.log('Extension installed')
+  // console.log(import.meta..env)
 })
 
 onMessage(MessageType.UserActivity, async ({ sender }) => {
