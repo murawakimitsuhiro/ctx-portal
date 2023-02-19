@@ -1,5 +1,5 @@
 import type { Worker } from 'tesseract.js'
-import { createWorker } from 'tesseract.js'
+import { PSM, createWorker } from 'tesseract.js'
 
 export default class TesseractService {
   worker: Worker | null = null
@@ -21,20 +21,17 @@ export default class TesseractService {
       // eslint-disable-next-line no-console
       logger: m => console.debug('tesserract log : ', m),
     })
-    await this.worker.load()
-    await this.worker.loadLanguage('eng')
-    await this.worker.initialize('eng')
+    // await this.worker.loadLanguage('eng+jpn')
+    // await this.worker.initialize('eng+jpn')
+    await this.worker.loadLanguage('jpn')
+    await this.worker.initialize('jpn')
+    await this.worker.setParameters({ tessedit_pageseg_mode: PSM.AUTO })
   }
 
-  async recognize(url: string) {
+  async recognize(imgbase64: string) {
     if (this.worker === null)
       await this.init()
-
-    const {
-      data: { text },
-    } = await (this.worker as Worker).recognize(url)
-
-    return text
+    return await (this.worker as Worker).recognize(imgbase64)
   }
 
   async terminate() {
