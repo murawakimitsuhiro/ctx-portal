@@ -5,9 +5,7 @@ import type {
   StorageAsyncOptions,
   StorageLikeAsync,
 } from '@vueuse/core'
-import {
-  useStorageAsync,
-} from '@vueuse/core'
+import { useStorageAsync } from '@vueuse/core'
 
 const storageLocal: StorageLikeAsync = {
   removeItem(key: string) {

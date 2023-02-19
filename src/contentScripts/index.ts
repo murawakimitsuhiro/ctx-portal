@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import { sendMessage } from 'webext-bridge'
-import { capturedLog } from '~/logic';
+import { capturedLog } from '~/logic'
 import { MessageType } from '~/pkg/const/message'
-import TesseractService from '~/pkg/service/ocr';
+import TesseractService from '~/pkg/service/ocr'
 
 (() => {
   sendMessage(MessageType.UserActivity, { action: 'test' })
@@ -37,4 +37,6 @@ async function loggingByCapturedImage(img: string) {
     displayText: text,
     inputText: '',
   }
+  console.debug('saved')
+  console.debug(capturedLog)
 }

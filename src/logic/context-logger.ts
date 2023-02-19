@@ -1,8 +1,9 @@
-import browser from 'webextension-polyfill';
-import { useStorageLocal } from '~/composables/useStorageLocal';
-import type { CaptureLog } from '~/pkg/entity/capture-log';
+import { useStorage } from '@vueuse/core'
+import browser from 'webextension-polyfill'
+// import { useStorageLocal } from '~/composables/useStorageLocal'
+import type { CaptureLog } from '~/pkg/entity/capture-log'
 
-export const capturedLog = useStorageLocal<CaptureLog>(
+export const capturedLog = useStorage<CaptureLog>(
   'captured-log',
   {
     img: '',
@@ -12,7 +13,6 @@ export const capturedLog = useStorageLocal<CaptureLog>(
     displayText: '',
     inputText: '',
   },
-  { listenToStorageChanges: true },
 )
 
 export const captureVisibleIfTabActive = async (tabId: number) => {

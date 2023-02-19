@@ -2,10 +2,10 @@
 import { capturedLog } from '~/logic'
 // import TesseractService from '~/pkg/service/ocr';
 //
-// // const title = computed(() => {
-// //   console.debug(capturedLog)
-// //   return capturedLog.value?.title ?? 'no title'
-// // })
+const title = computed(() => {
+  console.debug(capturedLog)
+  return capturedLog.value?.title ?? 'no title'
+})
 // const tsract = new TesseractService()
 // const text = await tsract.recognize('hoge')
 // console.debug('text ! ', text)
@@ -13,7 +13,7 @@ import { capturedLog } from '~/logic'
 
 <template>
   <main class="px-4 py-4 text-gray-700 dark:text-gray-200">
-    <h2 class="text-lg font-bold">Debug View</h2>
+    <h2 class="text-lg font-bold">Debug View {{ title }}</h2>
 
     <div class="overflow-hidden bg-white shadow sm:rounded-lg my-6">
       <div class="px-4 py-5 sm:px-6">
