@@ -1,12 +1,16 @@
 /* eslint-disable no-console */
 import { sendMessage } from 'webext-bridge'
 import { MessageType } from '~/pkg/const/message'
+import TesseractService from '~/pkg/service/ocr';
 
 (() => {
   sendMessage(MessageType.UserActivity, { action: 'test' })
-    .then((vale) => {
-      console.debug(vale)
+    .then(({ capturedImg }) => {
+      if (!capturedImg)
+        return
+      return TesseractService.shared().recognize(capturedImg)
     })
+    .then(text => console.log('OCR result: ', text))
     .catch(err => console.error('sendMessage: UserActivity error', err))
 
   // mount component to context window
