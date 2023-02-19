@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import { sendMessage } from 'webext-bridge';
-import { MessageType } from '~/logic/message';
+import { sendMessage } from 'webext-bridge'
+import { MessageType } from '~/pkg/const/message'
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (() => {

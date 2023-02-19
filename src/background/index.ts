@@ -1,8 +1,7 @@
-import type { Tabs } from 'webextension-polyfill'
 import browser from 'webextension-polyfill'
 import { onMessage } from 'webext-bridge'
 import { capturedLog } from '~/logic'
-import { MessageType } from '../logic/message'
+import { MessageType } from '~/pkg/const/message'
 
 browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
