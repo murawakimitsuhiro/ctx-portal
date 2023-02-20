@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { VARIABLES } from '~/variables'
 
 function openOptionsPage() {
   browser.runtime.openOptionsPage()
