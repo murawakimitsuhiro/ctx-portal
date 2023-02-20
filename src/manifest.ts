@@ -23,6 +23,9 @@ export async function getManifest() {
     },
     background: {
       service_worker: './dist/background/index.mjs',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      type: 'module',
     },
     icons: {
       16: './assets/icon-512.png',
