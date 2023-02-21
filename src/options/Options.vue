@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 import { captureBrowseQueue } from '~/logic'
 import { CaptureBrowse } from '~/pkg/entity/capture-log'
 import { supabase } from '~/pkg/service/supabase'
 
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.tz.setDefault('Asia/Tokyo')
+// dayjs.tz.guess()
+
 const latestCapture = computed((): CaptureBrowse => {
   return captureBrowseQueue.value[captureBrowseQueue.value.length - 1]
+})
+
+const captureLog = computed(() => {
+  return captureBrowseQueue.value.slice().reverse()
 })
 
 const countries = ref<any[]>([])
@@ -26,7 +37,9 @@ onMounted(() => {
     <div class="overflow-hidden bg-white shadow sm:rounded-lg my-6">
       <div class="px-4 py-5 sm:px-6">
         <h3 class="text-lg font-medium leading-6 text-gray-900">Latest Captured Log</h3>
-        <p class="mt-1 max-w-2xl text-sm text-gray-500">{{ latestCapture.datetime }}</p>
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+          {{ dayjs(latestCapture.datetime).tz().format('MM/DD HH:mm:ss') }}
+        </p>
       </div>
       <div class="flex">
         <div class="border-t border-gray-200">
@@ -82,9 +95,9 @@ onMounted(() => {
               </tr>
             </thead>
             <tbody class="text-sm divide-y divide-gray-100">
-              <tr v-for="log in captureBrowseQueue.reverse()">
+              <tr v-for="log in captureLog">
                 <td class="p-2 whitespace-nowrap">
-                  <div class="text-left">{{ dayjs(log.datetime).format('DD hh:mm:ss') }}</div>
+                  <div class="text-left">{{ dayjs(log.datetime).tz().format('DD HH:mm:ss') }}</div>
                 </td>
                 <td class="p-2 whitespace-nowrap">
                   <div class="text-left max-w-xs truncate">{{ log.document.title }}</div>
