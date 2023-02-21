@@ -1,24 +1,18 @@
 import browser from 'webextension-polyfill'
 import { onMessage } from 'webext-bridge'
-import { captureVisibleIfTabActive } from '~/logic'
+import { captureBrowseQueue, captureVisibleIfTabActive } from '~/logic'
 import { MessageType } from '~/pkg/const/message'
-import { supabase } from '~/pkg/service/supabase'
 
 browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
   console.log('Extension installed')
-
-  // const vars = Object(process.env.VITE)
-  // Supabase.shared().setVariables(vars.VITE_SUPABASE_API_URL, vars.VITE_SUPABASE_KEY)
-  supabase.from('countries').select()
-    .then(({ data, error }) => {
-      if (error) throw error
-      console.debug('supabase data ', data)
-    })
 })
 
-onMessage(MessageType.UserActivity, async ({ sender }) => {
-  const img = await captureVisibleIfTabActive(sender.tabId)
-    .catch(err => console.error('captureCurrentTab error', err))
-  return { capturedImg: img ?? null }
+onMessage(MessageType.UserActivity, async ({ sender }): Promise<{ img: string; timestamp: Date } | null> => {
+  return await captureVisibleIfTabActive(sender.tabId)
+})
+
+onMessage(MessageType.CaptureBrowse, async ({ data }) => {
+  captureBrowseQueue.value.push(data)
+  console.debug('saved ', data)
 })

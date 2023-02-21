@@ -64,9 +64,7 @@
     "webext-bridge": "^5.0.5",
     "webextension-polyfill": "^0.10.0",
     "@supabase/supabase-js": "^2.8.0",
-    "dayjs": "^1.11.7"
-  },
-  "dependencies": {
+    "dayjs": "^1.11.7",
     "tesseract.js": "^4.0.2"
   }
 }
