@@ -1,4 +1,4 @@
-export interface Document {
+export interface BrowseDocument {
   title: string
   url: string
 }
@@ -11,6 +11,6 @@ export interface Paragraph {
 export interface CaptureBrowse {
   img: string
   datetime: Date
-  document: Document
+  document: BrowseDocument
   paragraphs: Paragraph[]
 }

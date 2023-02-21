@@ -1,5 +1,5 @@
-import browser from 'webextension-polyfill'
 import { useThrottleFn } from '@vueuse/core'
+import browser from 'webextension-polyfill'
 import { useStorageLocal } from '~/composables/useStorageLocal'
 import type { CaptureBrowse, Paragraph } from '~/pkg/entity/capture-log'
 import TesseractService from '~/pkg/service/ocr'
@@ -39,16 +39,16 @@ export const captureVisibleIfTabActive = async (tabId: number): Promise<{ img: s
 }
 
 // called content script
-export const OCRBroseImage = async (img: string): Promise<CaptureBrowse | null> => {
-  const capturedDate = new Date()
+export const OCRBroseImage = async (img: string): Promise<Paragraph[] | null> => {
   const result = await TesseractService.shared().recognize(img)
-  console.debug('ocr result : ', result)
+  // OCRの結果を見たい場合
+  // console.debug('ocr result : ', result)
   const { data: { blocks } } = result
 
   if (!blocks)
     return null
 
-  const paragraphs = blocks.reduce((acc: Paragraph[], block) => {
+  return blocks.reduce((acc: Paragraph[], block) => {
     if (ignoreBlockTypes.includes(block.blocktype) || block.confidence < thresholdConfidence)
       return acc
 
@@ -62,14 +62,4 @@ export const OCRBroseImage = async (img: string): Promise<CaptureBrowse | null> 
       }) ?? []
     return acc.concat(ps)
   }, [])
-
-  return {
-    img,
-    datetime: capturedDate,
-    document: {
-      title: document.title,
-      url: document.URL,
-    },
-    paragraphs,
-  }
 }
