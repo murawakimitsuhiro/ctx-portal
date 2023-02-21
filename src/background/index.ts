@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill'
 import { onMessage } from 'webext-bridge'
 import { captureBrowseQueue, captureVisibleIfTabActive } from '~/logic'
 import { MessageType } from '~/pkg/const/message'
-import { BrowseDocument } from '~/pkg/entity/capture-log'
+import type { BrowseDocument } from '~/pkg/entity/capture-log'
 
 browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console

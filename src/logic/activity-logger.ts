@@ -4,7 +4,7 @@ import { useStorageLocal } from '~/composables/useStorageLocal'
 import type { CaptureBrowse, Paragraph } from '~/pkg/entity/capture-log'
 import TesseractService from '~/pkg/service/ocr'
 
-const throttleCaptureSeconds = 6
+const throttleCaptureSeconds = 30
 const ignoreBlockTypes = [
   'CAPTION_TEXT',
   'HORZ_LINE',
@@ -31,9 +31,7 @@ const captureThrottle = useThrottleFn(async (tabId: number, timestamp: Date): Pr
 export const captureVisibleIfTabActive = async (tabId: number): Promise<{ img: string; timestamp: Date } | null> => {
   const now = new Date()
   const captured = await captureThrottle(tabId, now)
-  if (!captured)
-    return null
-  if (captured.timestamp === now)
+  if (captured && captured.timestamp === now)
     return captured
   return null
 }
