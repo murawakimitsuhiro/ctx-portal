@@ -97,7 +97,7 @@ onMounted(() => {
             <tbody class="text-sm divide-y divide-gray-100">
               <tr v-for="log in captureLog">
                 <td class="p-2 whitespace-nowrap">
-                  <div class="text-left">{{ dayjs(log.datetime).tz().format('DD HH:mm:ss') }}</div>
+                  <div class="text-left">{{ dayjs(log.datetime).tz().format('DD日 HH:mm:ss') }}</div>
                 </td>
                 <td class="p-2 whitespace-nowrap">
                   <div class="text-left max-w-xs truncate">{{ log.document.title }}</div>
@@ -106,7 +106,7 @@ onMounted(() => {
                   <div class="text-left w-40 truncate font-medium text-green-500">{{ log.document.url }}</div>
                 </td>
                 <td class="p-2 whitespace-nowrap">
-                  <img :src="log.img" alt="screenshot">
+                  <img class="object-contain h-10 transition-all hover:h-60" :src="log.img" alt="screenshot">
                 </td>
                 <td class="p-2 whitespace-nowrap max-w-xs overflow-scroll">
                   <div class="text-xs text-left">{{ log.paragraphs.map(p => p.text).join() }}</div>

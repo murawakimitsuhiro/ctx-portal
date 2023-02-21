@@ -39,6 +39,7 @@ export async function getManifest() {
       'contextMenus',
       'activeTab',
       'scripting',
+      'unlimitedStorage',
       'tabs',
     ],
     host_permissions: ['<all_urls>'],

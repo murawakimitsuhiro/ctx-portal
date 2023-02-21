@@ -25,7 +25,7 @@ async function loggingByCapturedImage(img: string, timestamp: Date) {
       title: document.title,
       url: document.URL,
     },
-    paragraphs: [{ text: 'hello', confidence: 1 }],
+    paragraphs: [],
   }
   await sendMessage(MessageType.CaptureBrowse, captureDummy)
 }
