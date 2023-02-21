@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
 import { sendMessage } from 'webext-bridge'
 import { OCRBroseImage } from '~/logic'
 import { MessageType } from '~/pkg/const/message'
-import { CaptureBrowse } from '~/pkg/entity/capture-log'
+import type { CaptureBrowse } from '~/pkg/entity/capture-log'
 
 (() => {
   setInterval(() => {
@@ -21,12 +20,12 @@ async function loggingByCapturedImage(img: string, timestamp: Date) {
   //   await sendMessage(MessageType.CaptureBrowse, captured)
   const captureDummy: CaptureBrowse = {
     img,
-    datetime: new Date(),
+    datetime: timestamp,
     document: {
       title: document.title,
       url: document.URL,
     },
-    paragraphs: ['hello', 'hogehoge'],
+    paragraphs: [{ text: 'hello', confidence: 1 }],
   }
   await sendMessage(MessageType.CaptureBrowse, captureDummy)
 }

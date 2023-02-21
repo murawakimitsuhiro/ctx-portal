@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import { captureBrowseQueue } from '~/logic'
 import { CaptureBrowse } from '~/pkg/entity/capture-log'
 import { supabase } from '~/pkg/service/supabase'
@@ -51,6 +52,56 @@ onMounted(() => {
           </dl>
         </div>
         <img :src="latestCapture.img" class="max-w-120 object-contain" alt="extension icon">
+      </div>
+    </div>
+
+    <div class="w-full mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+      <header class="px-5 py-4 border-b border-gray-100">
+        <h2 class="font-semibold text-gray-800">User Browse Logs</h2>
+      </header>
+      <div class="p-3">
+        <div class="overflow-x-auto">
+          <table class="table-auto w-full">
+            <thead class="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+              <tr>
+                <th class="p-2 whitespace-nowrap">
+                  <div class="font-semibold text-left">Time</div>
+                </th>
+                <th class="p-2 whitespace-nowrap">
+                  <div class="font-semibold text-left">Title</div>
+                </th>
+                <th class="p-2 whitespace-nowrap">
+                  <div class="font-semibold text-left">URL</div>
+                </th>
+                <th class="p-2 whitespace-nowrap">
+                  <div class="font-semibold text-left">image</div>
+                </th>
+                <th class="p-2 whitespace-nowrap">
+                  <div class="font-semibold text-center">paragraphs</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="text-sm divide-y divide-gray-100">
+              <tr v-for="log in captureBrowseQueue.reverse()">
+                <td class="p-2 whitespace-nowrap">
+                  <div class="text-left">{{ dayjs(log.datetime).format('DD hh:mm:ss') }}</div>
+                </td>
+                <td class="p-2 whitespace-nowrap">
+                  <div class="text-left max-w-xs truncate">{{ log.document.title }}</div>
+                </td>
+                <td class="p-2 whitespace-nowrap">
+                  <div class="text-left w-40 truncate font-medium text-green-500">{{ log.document.url }}</div>
+                </td>
+                <td class="p-2 whitespace-nowrap">
+                  <img :src="log.img" alt="screenshot">
+                </td>
+                <td class="p-2 whitespace-nowrap max-w-xs overflow-scroll">
+                  <div class="text-xs text-left">{{ log.paragraphs.map(p => p.text).join() }}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </main>
