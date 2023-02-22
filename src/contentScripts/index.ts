@@ -21,15 +21,15 @@ import type { BrowseDocument, CaptureBrowse } from '~/pkg/entity/capture-log'
 })()
 
 async function loggingByCapturedImage(document: BrowseDocument, img: string, timestamp: Date) {
-  const ocrParagraphs = await OCRBroseImage(img)
-  if (!ocrParagraphs)
-    return
+  // const ocrParagraphs = await OCRBroseImage(img)
+  // if (!ocrParagraphs)
+  //   return
 
   const captureDummy: CaptureBrowse = {
     img,
     document,
     datetime: timestamp,
-    paragraphs: ocrParagraphs,
+    paragraphs: [],
   }
   await sendMessage(MessageType.CaptureBrowse, captureDummy)
 }

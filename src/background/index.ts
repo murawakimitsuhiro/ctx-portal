@@ -25,3 +25,32 @@ onMessage(MessageType.CaptureBrowse, async ({ data }) => {
   captureBrowseQueue.value.push(data)
   console.debug('saved capture ', data)
 })
+
+// ローカルアプリの起動
+const port = browser.runtime.connectNative('dev.mrwk.ctx_portal')
+
+// ローカルアプリからメッセージ受信
+// port.onMessage.addListener((req) => {
+//   if (browser.runtime.lastError) {
+//     console.log(browser.runtime.lastError.message)
+//   }
+//   handleMessage(req)
+// })
+
+// アプリから切断されたときの処理
+port.onDisconnect.addListener(() => {
+  if (browser.runtime.lastError)
+    console.log(browser.runtime.lastError.message)
+
+  console.debug('port', port)
+  console.log('Disconnected')
+})
+
+// function handleMessage(req) {
+//   console.log('req.message : ', req.message)
+//   if (req.message === 'pong')
+//     console.log(req)
+// }
+
+// ローカルアプリへメッセージ送信
+// port.postMessage({ message: 'ping', body: 'hello from browser extension'})

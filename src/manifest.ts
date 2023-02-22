@@ -41,6 +41,7 @@ export async function getManifest() {
       'scripting',
       'unlimitedStorage',
       'tabs',
+      'nativeMessaging',
     ],
     host_permissions: ['<all_urls>'],
     content_scripts: [

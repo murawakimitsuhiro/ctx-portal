@@ -1,0 +1,8 @@
+{
+    "name": "dev.mrwk.ctx_portal",
+    "description": "Native Message example",
+    "path": "/Users/murawakimitsuhiro/src/github.com/murawakimitsuhiro/ctx-portal/native-app/echo.py",
+    "type": "stdio",
+    "supports_native_initiated_connections": true,
+    "allowed_origins": ["chrome-extension://pgeblnnbkphmknghbdodpmkfbgikknbp/"]
+}
