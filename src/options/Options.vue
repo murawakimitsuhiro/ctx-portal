@@ -2,6 +2,7 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import browser from 'webextension-polyfill'
 import { captureBrowseQueue } from '~/logic'
 import { CaptureBrowse } from '~/pkg/entity/capture-log'
 import { supabase } from '~/pkg/service/supabase'
@@ -11,30 +12,32 @@ dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/Tokyo')
 // dayjs.tz.guess()
 
-const latestCapture = computed((): CaptureBrowse => {
-  return captureBrowseQueue.value[captureBrowseQueue.value.length - 1]
-})
-
 const captureLog = computed(() => {
   return captureBrowseQueue.value.slice().reverse()
 })
 
-const countries = ref<any[]>([])
-
-async function getCountries() {
-  const { data } = await supabase.from('countries').select()
-  countries.value = data ?? []
-}
-
-onMounted(() => {
-  // getCountries()
+const latestCapture = computed((): CaptureBrowse => {
+  return captureBrowseQueue.value[captureBrowseQueue.value.length - 1]
 })
+
+// supabase test
+// const countries = ref<any[]>([])
+// onMounted(() => {
+  // const { data } = await supabase.from('countries').select()
+  // countries.value = data ?? []
+// })
+
+// todo raective化
+// useLocalStorageを使っているため、帰ってくるrefを単純に更新することはできない
+// browser.storage.onChanged.addListener((changes, namespace) => {
+//   console.debug(captureBrowseQueue.value)
+// })
 </script>
 
 <template>
   <main class="px-4 py-4 text-gray-700 dark:text-gray-200">
     <h2 class="text-lg font-bold">Debug View</h2>
-    <div class="overflow-hidden bg-white shadow sm:rounded-lg my-6">
+    <div v-if="latestCapture" class="overflow-hidden bg-white shadow sm:rounded-lg my-6">
       <div class="px-4 py-5 sm:px-6">
         <h3 class="text-lg font-medium leading-6 text-gray-900">Latest Captured Log</h3>
         <p class="mt-1 max-w-2xl text-sm text-gray-500">

@@ -3,6 +3,7 @@ import type {
   MaybeRef,
   RemovableRef,
   StorageLikeAsync,
+  UseStorageAsyncOptions,
 } from '@vueuse/core'
 import { useStorageAsync } from '@vueuse/core'
 
@@ -23,4 +24,5 @@ const storageLocal: StorageLikeAsync = {
 export const useStorageLocal = <T>(
   key: string,
   initialValue: MaybeRef<T>,
-): RemovableRef<T> => useStorageAsync(key, initialValue, storageLocal)
+  options?: UseStorageAsyncOptions<T>,
+): RemovableRef<T> => useStorageAsync(key, initialValue, storageLocal, options)

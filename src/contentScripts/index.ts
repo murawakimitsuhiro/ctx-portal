@@ -5,14 +5,6 @@ import type { BrowseDocument, CaptureBrowse } from '~/pkg/entity/capture-log'
 
 (() => {
   const openedTime = new Date()
-  // setInterval(() => {
-  //   sendMessage(MessageType.UserActivity, { title: document.title, url: document.URL })
-  //     .then((captureResult) => {
-  //       if (captureResult)
-  //         return loggingByCapturedImage(captureResult.document, captureResult.img, captureResult.timestamp)
-  //     })
-  //     .catch(err => console.error('sendMessage: UserActivity error', err))
-  // }, 10 * 1000)
   addEventListener('scroll', (_) => {
     const elapsed = (new Date()).valueOf() - openedTime.valueOf()
     // 30秒以上滞在していない時には記録しない
@@ -22,8 +14,7 @@ import type { BrowseDocument, CaptureBrowse } from '~/pkg/entity/capture-log'
     sendMessage(MessageType.UserActivity, { title: document.title, url: document.URL })
       .then((captureResult) => {
         if (captureResult)
-          console.debug('returned capture img', captureResult)
-        //   return loggingByCapturedImage(captureResult.document, captureResult.img, captureResult.timestamp)
+          return loggingByCapturedImage(captureResult.document, captureResult.img, captureResult.timestamp)
       })
       .catch(err => console.error('sendMessage: UserActivity error', err))
   }, { passive: true })
