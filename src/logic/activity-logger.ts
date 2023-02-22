@@ -1,7 +1,7 @@
 import { useThrottleFn } from '@vueuse/core'
 import browser from 'webextension-polyfill'
 import { useStorageLocal } from '~/composables/useStorageLocal'
-import type { CaptureBrowse, Paragraph } from '~/pkg/entity/capture-log'
+import type { UserBrowseLog, Paragraph } from '~/pkg/entity/capture-log'
 import TesseractService from '~/pkg/service/ocr'
 
 const throttleCaptureSeconds = 30
@@ -14,7 +14,7 @@ const ignoreBlockTypes = [
 ]
 const thresholdConfidence = 75
 
-export const captureBrowseQueue = useStorageLocal<CaptureBrowse[]>(
+export const captureBrowseQueue = useStorageLocal<UserBrowseLog[]>(
   'capture-browse-queue',
   [],
 )

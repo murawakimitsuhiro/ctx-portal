@@ -1,7 +1,7 @@
 import { sendMessage } from 'webext-bridge'
 import { OCRBroseImage } from '~/logic'
 import { MessageType } from '~/pkg/const/message'
-import type { BrowseDocument, CaptureBrowse } from '~/pkg/entity/capture-log'
+import type { BrowseDocument, UserBrowseLog } from '~/pkg/entity/capture-log'
 
 (() => {
   const openedTime = new Date()
@@ -25,7 +25,7 @@ async function loggingByCapturedImage(document: BrowseDocument, img: string, tim
   // if (!ocrParagraphs)
   //   return
 
-  const captureDummy: CaptureBrowse = {
+  const captureDummy: UserBrowseLog = {
     img,
     document,
     datetime: timestamp,

@@ -4,7 +4,7 @@ import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import browser from 'webextension-polyfill'
 import { captureBrowseQueue } from '~/logic'
-import { CaptureBrowse } from '~/pkg/entity/capture-log'
+import { UserBrowseLog } from '~/pkg/entity/capture-log'
 import { supabase } from '~/pkg/service/supabase'
 
 dayjs.extend(utc)
@@ -16,7 +16,7 @@ const captureLog = computed(() => {
   return captureBrowseQueue.value.slice().reverse()
 })
 
-const latestCapture = computed((): CaptureBrowse => {
+const latestCapture = computed((): UserBrowseLog => {
   return captureBrowseQueue.value[captureBrowseQueue.value.length - 1]
 })
 

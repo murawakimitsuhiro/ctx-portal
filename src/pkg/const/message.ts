@@ -1,5 +1,5 @@
 import type { ProtocolWithReturn } from 'webext-bridge'
-import type { BrowseDocument, CaptureBrowse } from '~/pkg/entity/capture-log'
+import type { BrowseDocument, UserBrowseLog } from '~/pkg/entity/capture-log'
 
 export const MessageType = {
   UserActivity: 'user-activity',
@@ -8,5 +8,5 @@ export const MessageType = {
 
 export interface MessageDataType {
   [MessageType.UserActivity]: ProtocolWithReturn<BrowseDocument, { document: BrowseDocument; img: string; timestamp: Date } | null>
-  [MessageType.CaptureBrowse]: CaptureBrowse
+  [MessageType.CaptureBrowse]: UserBrowseLog
 }

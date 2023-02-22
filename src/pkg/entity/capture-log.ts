@@ -8,7 +8,13 @@ export interface Paragraph {
   confidence: number
 }
 
-export interface CaptureBrowse {
+export interface CaptureActivity {
+  img: string
+  timestamp: Date
+  document: BrowseDocument
+}
+
+export interface UserBrowseLog {
   img: string
   datetime: Date
   document: BrowseDocument
