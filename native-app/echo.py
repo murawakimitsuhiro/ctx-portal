@@ -1,29 +1,42 @@
 #!/usr/bin/env python
 
 import sys
-import struct
 import json
+import struct
+import os
 
-print('------------------------------------XXXXXXXXXXXXXXXXXXXXXXXXXXX---------------------------------------', file=sys.stderr)
-#read msg
-rawLength = sys.stdin.buffer.read(4)
-messageLength = struct.unpack("@I", rawLength)[0]
-message = sys.stdin.buffer.read(messageLength).decode("utf-8")
-print('message: ' + message, file=sys.stderr)
-# example how it looks like: {"snippet":"[{\"fileName\":\"bla.java\",\"code\":\"abc();\\ndef()\\n\"},{\"fileName\":\"def.java\",\"code\":\"second\\ncode\\n\"}]"}
+# Python 3.x version
+# Read a message from stdin and decode it.
+def getMessage():
+    rawLength = sys.stdin.buffer.read(4)
+    if len(rawLength) == 0:
+        sys.exit(0)
+    messageLength = struct.unpack('@I', rawLength)[0]
+    message = sys.stdin.buffer.read(messageLength).decode('utf-8')
+    return json.loads(message)
 
-messageJson = json.loads(message)
-snippetValue = messageJson["snippet"] #this will get part starting from [{"fileName"}]
-codeBlocksJson = json.loads(snippetValue) #this is to parse the value, to parse the array, its json itself
+# Encode a message for transmission,
+# given its content.
+def encodeMessage(messageContent):
+    encodedContent = json.dumps(messageContent).encode('utf-8')
+    encodedLength = struct.pack('@I', len(encodedContent))
+    return {'length': encodedLength, 'content': encodedContent}
 
-# for item in codeBlocksJson:
-#     fn = item['fileName']
-#     cd = item['code']
-#     cd = cd.replace('\u00a0', '')
-#     cd = cd.replace('\u200b', '\n')
-#     fullPath = basePath + fn
-#     writer = open(fullPath, "w")
-#     writer.write(cd)
-#     writer.close()
+# Send an encoded message to stdout
+def sendMessage(encodedMessage):
+    sys.stdout.buffer.write(encodedMessage['length'])
+    sys.stdout.buffer.write(encodedMessage['content'])
+    sys.stdout.buffer.flush()
 
-# print('END_OF_FILE', file=sys.stderr)
+while True:
+    # receivedMessage = getMessage()
+    rawLength = sys.stdin.buffer.read(4)
+    msg = {
+        'message': 'pong',
+        'body': 'hello from nodejs app'
+    }
+    sendMessage(encodeMessage(msg))
+    # if receivedMessage == "get_temperature":
+    #     command = "/usr/local/bin/istats | grep \"CPU temp\" | awk '{print $3}'"
+    #     stream = os.popen(command)
+    #     sendMessage(encodeMessage(stream.read().strip()))
