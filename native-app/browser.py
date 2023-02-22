@@ -14,7 +14,6 @@ class BrowserIO:
       message = sys.stdin.buffer.read(messageLength).decode('utf-8')
       return json.loads(message)
 
-  # WriteMessage(b'{"stopped": true }')
   def writeMessage(self, message):
     try:
       sys.stdout.buffer.write(struct.pack("I", len(message)))
