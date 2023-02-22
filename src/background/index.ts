@@ -51,4 +51,5 @@ function handleMessage(req: any) {
 }
 
 // ローカルアプリへメッセージ送信
-port.postMessage({ text: 'ping' })
+port.postMessage({ type: 'ping', data: { text: 'ping' } })
+port.postMessage({ type: 'hoge' })
