@@ -28,14 +28,28 @@ def sendMessage(encodedMessage):
     sys.stdout.buffer.write(encodedMessage['content'])
     sys.stdout.buffer.flush()
 
+def WriteMessage(message):
+  try:
+    sys.stdout.buffer.write(struct.pack("I", len(message)))
+    sys.stdout.buffer.write(message)
+    sys.stdout.buffer.flush()
+    return True
+  except IOError:
+    return False
+
 while True:
-    # receivedMessage = getMessage()
-    rawLength = sys.stdin.buffer.read(4)
-    msg = {
-        'message': 'pong',
-        'body': 'hello from nodejs app'
-    }
-    sendMessage(encodeMessage(msg))
+    receivedMessage = getMessage()
+    # if receivedMessage['message'] == "ping":
+    #   sendMessage(encodeMessage("pong"))
+
+    # rawLength = sys.stdin.buffer.read(4)
+    # msg = {
+    #     'text': 'pong',
+    # }
+    WriteMessage(json.dumps('pong').encode('utf-8'))
+    
+
+    # sendMessage(encodeMessage(msg))
     # if receivedMessage == "get_temperature":
     #     command = "/usr/local/bin/istats | grep \"CPU temp\" | awk '{print $3}'"
     #     stream = os.popen(command)

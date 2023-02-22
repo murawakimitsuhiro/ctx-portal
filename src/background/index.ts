@@ -46,11 +46,9 @@ port.onDisconnect.addListener(() => {
   console.log('Disconnected')
 })
 
-function handleMessage(req) {
-  console.log('req.message : ', req.message)
-  if (req.message === 'pong')
-    console.log(req)
+function handleMessage(req: any) {
+  console.log('req : ', req)
 }
 
 // ローカルアプリへメッセージ送信
-port.postMessage({ message: 'ping', body: 'hello from browser extension'})
+port.postMessage({ text: 'ping' })
