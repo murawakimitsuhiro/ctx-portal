@@ -1,4 +1,4 @@
-## Native App
+# Native App
 
 copy to chrome config. (run at root dir)
 

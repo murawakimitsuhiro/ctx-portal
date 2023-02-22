@@ -15,20 +15,8 @@ def getMessage():
     message = sys.stdin.buffer.read(messageLength).decode('utf-8')
     return json.loads(message)
 
-# Encode a message for transmission,
-# given its content.
-def encodeMessage(messageContent):
-    encodedContent = json.dumps(messageContent).encode('utf-8')
-    encodedLength = struct.pack('@I', len(encodedContent))
-    return {'length': encodedLength, 'content': encodedContent}
-
-# Send an encoded message to stdout
-def sendMessage(encodedMessage):
-    sys.stdout.buffer.write(encodedMessage['length'])
-    sys.stdout.buffer.write(encodedMessage['content'])
-    sys.stdout.buffer.flush()
-
-def WriteMessage(message):
+# WriteMessage(b'{"stopped": true }')
+def writeMessage(message):
   try:
     sys.stdout.buffer.write(struct.pack("I", len(message)))
     sys.stdout.buffer.write(message)
@@ -37,20 +25,14 @@ def WriteMessage(message):
   except IOError:
     return False
 
+def writeObjectMessage(obj):
+  writeMessage(json.dumps(obj).encode('utf-8'))
+
+
 while True:
     receivedMessage = getMessage()
-    # if receivedMessage['message'] == "ping":
-    #   sendMessage(encodeMessage("pong"))
-
-    # rawLength = sys.stdin.buffer.read(4)
-    # msg = {
-    #     'text': 'pong',
-    # }
-    WriteMessage(json.dumps('pong').encode('utf-8'))
-    
-
-    # sendMessage(encodeMessage(msg))
-    # if receivedMessage == "get_temperature":
-    #     command = "/usr/local/bin/istats | grep \"CPU temp\" | awk '{print $3}'"
-    #     stream = os.popen(command)
-    #     sendMessage(encodeMessage(stream.read().strip()))
+    msg = {
+        'text': 'pong',
+        'echo': receivedMessage.get('text'),
+    }
+    writeObjectMessage(msg)
