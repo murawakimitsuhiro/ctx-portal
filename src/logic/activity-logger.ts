@@ -1,22 +1,21 @@
 import { useThrottleFn } from '@vueuse/core'
 import browser from 'webextension-polyfill'
 import { useStorageLocal } from '~/composables/useStorageLocal'
-import type { UserBrowseLog, BrowseDocument } from '~/pkg/entity/capture-log'
+import type { BrowseDocument, UserBrowseLog } from '~/pkg/entity/capture-log'
 import { NativeAppService } from '~/pkg/service/native-app'
-import TesseractService from '~/pkg/service/ocr'
 import { supabase } from '~/pkg/service/supabase'
 import { getHistory } from '~/pkg/util/histories'
 
 const throttleCaptureSeconds = 30
-const ignoreBlockTypes = [
-  'CAPTION_TEXT',
-  'HORZ_LINE',
-  'VERT_LINE',
-  'NOISE',
-  'COUNT',
-]
-const thresholdConfidence = 75
-const recentHisotyMinutes = 20
+// const ignoreBlockTypes = [
+//   'CAPTION_TEXT',
+//   'HORZ_LINE',
+//   'VERT_LINE',
+//   'NOISE',
+//   'COUNT',
+// ]
+// const thresholdConfidence = 75
+const recentHistoryMinutes = 20
 
 export const captureBrowseQueue = useStorageLocal<UserBrowseLog[]>(
   'capture-browse-queue',
@@ -42,7 +41,7 @@ export const captureVisibleTabAndSendNativeApp = async (
     return
 
   const latestSavedTime = await getHistoryLatestSavedTime()
-  const recentHistories = await getHistory(recentHisotyMinutes, latestSavedTime ?? undefined)
+  const recentHistories = await getHistory(recentHistoryMinutes, latestSavedTime ?? undefined)
   const sendData = {
     img: captured.img,
     timestamp: captured.timestamp,

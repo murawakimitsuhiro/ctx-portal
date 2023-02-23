@@ -2,30 +2,32 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import browser from 'webextension-polyfill'
+import { useBrowseParagraphLog } from '~/composables/useBroseParagraphLog'
 import { captureBrowseQueue } from '~/logic'
-import { UserBrowseLog } from '~/pkg/entity/capture-log'
-import { supabase } from '~/pkg/service/supabase'
+import { BrowseParagraphLog } from '~/pkg/entity/browse-paragraph-log'
+import type { UserBrowseLog } from '~/pkg/entity/capture-log'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/Tokyo')
 // dayjs.tz.guess()
 
-const captureLog = computed(() => {
-  return captureBrowseQueue.value.slice().reverse()
-})
+// const captureLog = computed(() => {
+//   return captureBrowseQueue.value.slice().reverse()
+//   return captureBrowseQueue.value.slice().reverse()
+// })
 
-const latestCapture = computed((): UserBrowseLog => {
-  return captureBrowseQueue.value[captureBrowseQueue.value.length - 1]
+const { browseParagraphLogs } = useBrowseParagraphLog()
+
+const latestCapture = computed((): BrowseParagraphLog => {
+  return browseParagraphLogs.value[0]
+  // return browseParagraphLogs[0]
 })
 
 // supabase test
 // const countries = ref<any[]>([])
-// onMounted(() => {
-  // const { data } = await supabase.from('countries').select()
-  // countries.value = data ?? []
-// })
+onMounted(async () => {
+})
 
 // todo raective化
 // useLocalStorageを使っているため、帰ってくるrefを単純に更新することはできない
@@ -49,11 +51,11 @@ const latestCapture = computed((): UserBrowseLog => {
           <dl>
             <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt class="text-sm font-medium text-gray-500">Page title</dt>
-              <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ latestCapture.document.title }}</dd>
+              <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ latestCapture.document_title }}</dd>
             </div>
             <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt class="text-sm font-medium text-gray-500">Page url</dt>
-              <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ latestCapture.document.url }}</dd>
+              <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ latestCapture.document_url }}</dd>
             </div>
             <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt class="text-sm font-medium text-gray-500">Paragraph (OCR result)</dt>
@@ -67,7 +69,7 @@ const latestCapture = computed((): UserBrowseLog => {
             </div>
           </dl>
         </div>
-        <img :src="latestCapture.img" class="max-w-120 object-contain" alt="extension icon">
+        <img :src="latestCapture.capture_img" class="max-w-120 object-contain" alt="extension icon">
       </div>
     </div>
 
@@ -98,18 +100,18 @@ const latestCapture = computed((): UserBrowseLog => {
               </tr>
             </thead>
             <tbody class="text-sm divide-y divide-gray-100">
-              <tr v-for="log in captureLog">
+              <tr v-for="log in browseParagraphLogs">
                 <td class="p-2 whitespace-nowrap">
                   <div class="text-left">{{ dayjs(log.datetime).tz().format('DD日 HH:mm:ss') }}</div>
                 </td>
                 <td class="p-2 whitespace-nowrap">
-                  <div class="text-left max-w-xs truncate">{{ log.document.title }}</div>
+                  <div class="text-left max-w-xs truncate">{{ log.document_title }}</div>
                 </td>
                 <td class="p-2 whitespace-nowrap">
-                  <div class="text-left w-40 truncate font-medium text-green-500">{{ log.document.url }}</div>
+                  <div class="text-left w-40 truncate font-medium text-green-500">{{ log.document_url }}</div>
                 </td>
                 <td class="p-2 whitespace-nowrap">
-                  <img class="object-contain h-10 transition-all hover:h-60" :src="log.img" alt="screenshot">
+                  <img class="object-contain h-10 transition-all hover:h-60" :src="log.capture_img" alt="screenshot">
                 </td>
                 <td class="p-2 whitespace-nowrap max-w-xs overflow-scroll">
                   <div class="text-xs text-left">{{ log.paragraphs.map(p => p.text).join() }}</div>

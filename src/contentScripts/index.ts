@@ -15,9 +15,9 @@ import { MessageType } from '~/pkg/const/message'
 
 // OCRをjs側で行う場合
 // async function loggingByCapturedImage(document: BrowseDocument, img: string, timestamp: Date) {
-  // const ocrParagraphs = await OCRBroseImage(img)
-  // if (!ocrParagraphs)
-  //   return
+//   const ocrParagraphs = await OCRBroseImage(img)
+//   if (!ocrParagraphs)
+//     return
 
 //   const captureDummy: UserBrowseLog = {
 //     img,
