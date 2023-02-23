@@ -4,11 +4,14 @@ import { captureBrowseQueue, captureVisibleIfTabActive } from '~/logic'
 import { MessageType } from '~/pkg/const/message'
 import type { BrowseDocument, UserBrowseLog } from '~/pkg/entity/capture-log'
 import { NativeAppService } from '~/pkg/service/native-app'
+import { getHistory } from '~/pkg/util/histories'
 
 browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
   console.log('Extension installed')
-  sendTestCapture()
+  getHistory(15, 1677161041577.3)
+    .then((history) => console.debug('history', history))
+  // sendTestCapture()
   // NativeAppService.shared().sendMessage('ping', { text: 'hello from background script' })
 })
 
