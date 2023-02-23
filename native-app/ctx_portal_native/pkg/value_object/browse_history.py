@@ -1,6 +1,8 @@
 from typing import TypedDict
 
 class BrowseHistory(TypedDict):
-    timestamp: str
+    id: str 
+    last_visit_time: float
     title: str
-    url: str
+    url: str 
+    uuid: str

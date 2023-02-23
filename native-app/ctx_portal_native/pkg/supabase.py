@@ -2,6 +2,7 @@ import json
 import os
 from uuid import uuid4
 from typing import List
+from pkg.value_object.browse_history import BrowseHistory
 from pkg.value_object.browse_paragraph_log import Document, Paragraph, BrowseParagraphLog
 from supabase import create_client, Client, PostgrestAPIResponse
 
@@ -49,7 +50,18 @@ class SupabaseClient:
             'capture_img': browseLog.get('img')
         }
 
+        histories: List(BrowseHistory) = [
+            {
+                'id': h.get('id'),
+                'last_visit_time': h.get('lastVisitTime'),
+                'title': h.get('title'),
+                'url': h.get('url'),
+            }
+            for h in browseLog.get('histories')
+        ]
+
         data, count = self.client.table("paragraphs").insert(paragraphs).execute()
         data, count = self.client.table("browse_paragraph_logs").insert(browse_paragraph_log).execute()
+        data, count = self.client.table("histories").insert(histories).execute()
 
         return data

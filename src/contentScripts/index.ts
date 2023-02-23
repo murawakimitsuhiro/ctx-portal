@@ -1,7 +1,5 @@
 import { sendMessage } from 'webext-bridge'
-import { OCRBroseImage } from '~/logic'
 import { MessageType } from '~/pkg/const/message'
-import type { BrowseDocument, UserBrowseLog } from '~/pkg/entity/capture-log'
 
 (() => {
   const openedTime = new Date()
@@ -11,25 +9,21 @@ import type { BrowseDocument, UserBrowseLog } from '~/pkg/entity/capture-log'
     if (elapsed < 30 * 1000)
       return
 
-    sendMessage(MessageType.UserActivity, { title: document.title, url: document.URL })
-      .then((captureResult) => {
-        if (captureResult)
-          return loggingByCapturedImage(captureResult.document, captureResult.img, captureResult.timestamp)
-      })
-      .catch(err => console.error('sendMessage: UserActivity error', err))
+    sendMessage(MessageType.UserActivity, { title: document.title, url: document.URL }).then()
   }, { passive: true })
 })()
 
-async function loggingByCapturedImage(document: BrowseDocument, img: string, timestamp: Date) {
+// OCRをjs側で行う場合
+// async function loggingByCapturedImage(document: BrowseDocument, img: string, timestamp: Date) {
   // const ocrParagraphs = await OCRBroseImage(img)
   // if (!ocrParagraphs)
   //   return
 
-  const captureDummy: UserBrowseLog = {
-    img,
-    document,
-    timestamp: timestamp,
-    paragraphs: [],
-  }
-  await sendMessage(MessageType.CaptureBrowse, captureDummy)
-}
+//   const captureDummy: UserBrowseLog = {
+//     img,
+//     document,
+//     timestamp: timestamp,
+//     paragraphs: [],
+//   }
+//   await sendMessage(MessageType.CaptureBrowse, captureDummy)
+// }
