@@ -32,11 +32,11 @@ onMessage(MessageType.CaptureBrowse, async ({ data }) => {
 async function sendTestCapture() {
   const key = 'capture-browse-queue'
   const capturedList: UserBrowseLog[] = JSON.parse((await browser.storage.local.get(key))[key])
-  const latest = capturedList[capturedList.length - 1]
+  const latest = capturedList[30]
   const data = {
     img: latest.img,
     document: latest.document,
-    timestamp: latest.timestamp,
+    timestamp: latest.datetime,
   }
   NativeAppService.shared().sendUserActivity(data)
 }

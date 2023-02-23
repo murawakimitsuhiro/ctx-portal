@@ -17,12 +17,21 @@ class SupabaseClient:
         data_entries = data_json['data']
         return data_entries
 
+    def select_document(self, url):
+        resposne = self.client.table("documents").select("*").eq("url", url).execute()
+        return json.loads(resposne.json())['data']
+
     def insert_browse_paragraph_log(self, browseLog, texts):
-        document: Document = {
-            'id': str(uuid4()),
-            'title': browseLog.get('document').get('title'),
-            'url': browseLog.get('document').get('url'),
-        }
+        exist_doc = self.select_document(browseLog.get('document').get('url'))
+        document = next(iter(exist_doc), None)
+
+        if document is None:
+            document: Document = {
+                'id': str(uuid4()),
+                'title': browseLog.get('document').get('title'),
+                'url': browseLog.get('document').get('url'),
+            }
+            data, count = self.client.table("documents").insert(document).execute()
 
         paragraphs: List(Paragraph) = [
             {
@@ -40,4 +49,7 @@ class SupabaseClient:
             'capture_img': browseLog.get('img')
         }
 
-        return {'log': browse_paragraph_log, 'document': document, 'paragraphs': paragraphs}
+        data, count = self.client.table("paragraphs").insert(paragraphs).execute()
+        data, count = self.client.table("browse_paragraph_logs").insert(browse_paragraph_log).execute()
+
+        return data
