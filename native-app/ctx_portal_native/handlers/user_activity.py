@@ -1,2 +1,6 @@
+from pkg.ocr import image_to_paragraphs
+
+
 def handle_user_activity(data):
-  return ('user-activity', { 'text': f'received timestamp {data.get("timestamp")}'})
+    ocr_paragraphs = image_to_paragraphs(data.get('img'))
+    return ('user-activity', {'paragraphs': ocr_paragraphs})
