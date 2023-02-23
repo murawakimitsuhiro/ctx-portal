@@ -36,7 +36,7 @@ async function sendTestCapture() {
   const data = {
     img: latest.img,
     document: latest.document,
-    timestamp: latest.datetime,
+    timestamp: latest.timestamp,
   }
   NativeAppService.shared().sendUserActivity(data)
 }

@@ -16,7 +16,7 @@ export interface CaptureActivity {
 
 export interface UserBrowseLog {
   img: string
-  datetime: Date
+  timestamp: Date
   document: BrowseDocument
   paragraphs: Paragraph[]
 }

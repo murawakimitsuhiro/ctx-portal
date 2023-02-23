@@ -28,7 +28,7 @@ async function loggingByCapturedImage(document: BrowseDocument, img: string, tim
   const captureDummy: UserBrowseLog = {
     img,
     document,
-    datetime: timestamp,
+    timestamp: timestamp,
     paragraphs: [],
   }
   await sendMessage(MessageType.CaptureBrowse, captureDummy)
