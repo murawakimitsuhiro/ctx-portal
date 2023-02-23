@@ -25,7 +25,7 @@ onMessage(MessageType.UserActivity, async ({ data, sender }): Promise<{
 })
 
 onMessage(MessageType.CaptureBrowse, async ({ data }) => {
-  // captureBrowseQueue.value.push(data)
+  captureBrowseQueue.value.push(data)
   console.debug('saved capture ', data)
 })
 
