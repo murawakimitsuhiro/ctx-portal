@@ -1,3 +1,4 @@
+from functools import reduce
 import json
 import os
 from uuid import uuid4
@@ -22,9 +23,16 @@ class SupabaseClient:
         resposne = self.client.table("documents").select("*").eq("url", url).execute()
         return json.loads(resposne.json())['data']
 
+    def select_paragraphs(self, document_id):
+        resposne = self.client.table("paragraphs").select("*").eq("document_id", document_id).execute()
+        return json.loads(resposne.json())['data']
+
     def insert_browse_paragraph_log(self, browseLog, texts):
         exist_doc = self.select_document(browseLog.get('document').get('url'))
         document = next(iter(exist_doc), None)
+
+        # saved_paragraphs = self.select_paragraphs(document['id']) if document else []
+        # return reduce(lambda acc, p: acc+p['text'], saved_paragraphs, '')
 
         if document is None:
             document: Document = {

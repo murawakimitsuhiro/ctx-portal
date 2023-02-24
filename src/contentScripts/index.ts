@@ -3,14 +3,16 @@ import { MessageType } from '~/pkg/const/message'
 
 (() => {
   const openedTime = new Date()
-  addEventListener('scroll', (_) => {
-    const elapsed = (new Date()).valueOf() - openedTime.valueOf()
-    // 30秒以上滞在していない時には記録しない
-    if (elapsed < 30 * 1000)
-      return
+  setTimeout(() => {
+    addEventListener('wheel', (_) => {
+      const elapsed = (new Date()).valueOf() - openedTime.valueOf()
+      // 30秒以上滞在していない時には記録しない
+      if (elapsed < 30 * 1000)
+        return
 
-    sendMessage(MessageType.UserActivity, { title: document.title, url: document.URL }).then()
-  }, { passive: true })
+      sendMessage(MessageType.UserActivity, { title: document.title, url: document.URL }).then()
+    }, { passive: true })
+  }, 15 * 1000)
 })()
 
 // OCRをjs側で行う場合

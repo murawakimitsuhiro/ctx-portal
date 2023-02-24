@@ -1,6 +1,6 @@
 import type { Runtime } from 'webextension-polyfill'
 import browser from 'webextension-polyfill'
-import { CaptureActivity } from '~/pkg/entity/capture-log'
+import type { UserBrowseLog } from '~/pkg/entity/capture-log'
 
 export class NativeAppService {
   private static instance: NativeAppService
@@ -44,7 +44,7 @@ export class NativeAppService {
     this.port.postMessage({ type: messageType, data })
   }
 
-  public sendUserActivity(data: CaptureActivity) {
+  public sendUserActivity(data: UserBrowseLog) {
     this.sendMessage('user-activity', data)
   }
 }

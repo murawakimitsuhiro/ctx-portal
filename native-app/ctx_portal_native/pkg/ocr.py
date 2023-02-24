@@ -1,15 +1,15 @@
 import base64
-from functools import reduce
-import numpy as np
-from PIL import Image
+import re
 import sys
 import pyocr
 import pyocr.builders
+import numpy as np
+from functools import reduce
 from io import BytesIO
-
+from PIL import Image
 from pprint import pprint
 
-confidence_threshold = 85
+confidence_threshold = 80
 
 def image_to_paragraphs(b64_img):
     tools = pyocr.get_available_tools()
@@ -29,25 +29,24 @@ def image_to_paragraphs(b64_img):
     )
 
     paragraphs = list(map(box_to_paragraph, line_and_word_boxes))
-    return paragraphs
+    return list(filter(lambda p: len(p) > 0, paragraphs))
 
 
 def box_to_paragraph(box):
     def concat_box(acc, box):
-        if box.confidence < confidence_threshold:
+        if box.confidence < confidence_threshold or len(box.content) == 0:
             return acc
         # return acc + f'({box.confidence}) {box.content}\n'
-        return acc + box.content
+        return acc + ' ' + box.content
 
-    return reduce(concat_box, box.word_boxes, '')
+    remove_jpn_space = '/(?<![a-z])\s+(?![a-z])/gm'
+
+    return re.sub(remove_jpn_space, '', reduce(concat_box, box.word_boxes, '')).strip()
 
     
 # debug
 if __name__ == '__main__':
-    img = Image.open('dummy/test.png')
-    im_file = BytesIO()
-    img.save(im_file, format="png")
-    im_bytes = im_file.getvalue()  # im_bytes: image in binary format.
-    im_b64 = base64.b64encode(im_bytes)
-    # print(image_to_paragraphs(im_b64))
-    pprint(image_to_paragraphs('data:image/png;base64,' + im_b64.decode('utf-8')))
+    from util.dummy_data import dummy_document_b64img
+    img_b64 = dummy_document_b64img('dummy/test_eng.png')
+    pprint(image_to_paragraphs(img_b64))
+    
