@@ -40,6 +40,7 @@ export class NativeAppService {
 
   private sendMessage(messageType: string, data: any) {
     // ローカルアプリへメッセージ送信
+    console.debug('send native message : ', messageType, data)
     this.port.postMessage({ type: messageType, data })
   }
 

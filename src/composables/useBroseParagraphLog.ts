@@ -1,9 +1,11 @@
+import { ref } from 'vue'
+import type { AppError } from '~/pkg/entity/app-error'
 import type { BrowseParagraphLog } from '~/pkg/entity/browse-paragraph-log'
 import { supabase } from '~/pkg/service/supabase'
 
 export const useBrowseParagraphLog = () => {
   const logs = ref<BrowseParagraphLog[]>([])
-  const err = ref<Error | null>(null)
+  const err = ref<AppError | null>(null)
 
   const fetchBrowseParagraphLog = async () => {
     const { data, error } = await supabase

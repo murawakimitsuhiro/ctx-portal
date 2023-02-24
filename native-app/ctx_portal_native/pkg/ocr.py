@@ -9,6 +9,8 @@ from io import BytesIO
 
 from pprint import pprint
 
+confidence_threshold = 85
+
 def image_to_paragraphs(b64_img):
     tools = pyocr.get_available_tools()
     if len(tools) == 0:
@@ -31,7 +33,21 @@ def image_to_paragraphs(b64_img):
 
 
 def box_to_paragraph(box):
-    return reduce(lambda acc, b: acc + b.content, box.word_boxes, '')
+    def concat_box(acc, box):
+        if box.confidence < confidence_threshold:
+            return acc
+        # return acc + f'({box.confidence}) {box.content}\n'
+        return acc + box.content
+
+    return reduce(concat_box, box.word_boxes, '')
 
     
-
+# debug
+if __name__ == '__main__':
+    img = Image.open('dummy/test.png')
+    im_file = BytesIO()
+    img.save(im_file, format="png")
+    im_bytes = im_file.getvalue()  # im_bytes: image in binary format.
+    im_b64 = base64.b64encode(im_bytes)
+    # print(image_to_paragraphs(im_b64))
+    pprint(image_to_paragraphs('data:image/png;base64,' + im_b64.decode('utf-8')))

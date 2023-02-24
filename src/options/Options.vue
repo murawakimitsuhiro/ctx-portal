@@ -3,37 +3,18 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { useBrowseParagraphLog } from '~/composables/useBroseParagraphLog'
-import { captureBrowseQueue } from '~/logic'
 import { BrowseParagraphLog } from '~/pkg/entity/browse-paragraph-log'
-import type { UserBrowseLog } from '~/pkg/entity/capture-log'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/Tokyo')
 // dayjs.tz.guess()
 
-// const captureLog = computed(() => {
-//   return captureBrowseQueue.value.slice().reverse()
-//   return captureBrowseQueue.value.slice().reverse()
-// })
-
 const { browseParagraphLogs } = useBrowseParagraphLog()
 
 const latestCapture = computed((): BrowseParagraphLog => {
   return browseParagraphLogs.value[0]
-  // return browseParagraphLogs[0]
 })
-
-// supabase test
-// const countries = ref<any[]>([])
-onMounted(async () => {
-})
-
-// todo raective化
-// useLocalStorageを使っているため、帰ってくるrefを単純に更新することはできない
-// browser.storage.onChanged.addListener((changes, namespace) => {
-//   console.debug(captureBrowseQueue.value)
-// })
 </script>
 
 <template>
