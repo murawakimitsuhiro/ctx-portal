@@ -28,7 +28,7 @@ const latestCapture = computed((): BrowseParagraphLog => {
         </p>
       </div>
       <div class="flex">
-        <div class="border-t border-gray-200">
+        <div class="border-t border-gray-200 w-300">
           <dl>
             <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt class="text-sm font-medium text-gray-500">Page title</dt>
@@ -50,7 +50,9 @@ const latestCapture = computed((): BrowseParagraphLog => {
             </div>
           </dl>
         </div>
-        <img :src="latestCapture.capture_img" class="max-w-120 object-contain" alt="extension icon">
+        <div>
+          <img :src="latestCapture.capture_img" class="object-contain" alt="extension icon">
+        </div>
       </div>
     </div>
 
