@@ -39,8 +39,12 @@ class SupabaseClient:
                 'id': str(uuid4()),
                 'title': browseLog.get('document').get('title'),
                 'url': browseLog.get('document').get('url'),
+                'latest_capture_img': browseLog.get('img'),
             }
             data, count = self.client.table("documents").insert(document).execute()
+        else:
+            document['latest_capture_img'] = browseLog.get('img')
+            data, count = self.client.table("documents").update(document).eq('id', document['id']).execute()
 
         paragraphs: List(Paragraph) = [
             {
@@ -55,7 +59,7 @@ class SupabaseClient:
             'timestamp': browseLog.get('timestamp'),
             'document_id': document['id'],
             'paragraph_ids': [p['id'] for p in paragraphs],
-            'capture_img': browseLog.get('img')
+            # 'capture_img': browseLog.get('img')
         }
 
         histories: List(BrowseHistory) = [

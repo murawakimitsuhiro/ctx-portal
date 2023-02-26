@@ -51,7 +51,7 @@ const latestCapture = computed((): BrowseParagraphLog => {
           </dl>
         </div>
         <div>
-          <img :src="latestCapture.capture_img" class="object-contain" alt="extension icon">
+          <img :src="latestCapture.latest_capture_img" class="object-contain" alt="extension icon">
         </div>
       </div>
     </div>

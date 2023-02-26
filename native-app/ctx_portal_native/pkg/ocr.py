@@ -39,7 +39,7 @@ def box_to_paragraph(box):
         # return acc + f'({box.confidence}) {box.content}\n'
         return acc + ' ' + box.content
 
-    remove_jpn_space = '/(?<![a-z])\s+(?![a-z])/gm'
+    remove_jpn_space = r'(?<![a-z])\s+(?![a-z])'
 
     return re.sub(remove_jpn_space, '', reduce(concat_box, box.word_boxes, '')).strip()
 
