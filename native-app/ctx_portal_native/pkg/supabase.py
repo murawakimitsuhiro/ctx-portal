@@ -1,3 +1,4 @@
+import base64
 from functools import reduce
 import json
 import os
@@ -27,6 +28,19 @@ class SupabaseClient:
         resposne = self.client.table("paragraphs").select("*").eq("document_id", document_id).execute()
         return json.loads(resposne.json())['data']
 
+    def storage(self):
+        return self.client.storage()
+
+    def upload_document_capture(self, document_id, imgb64):
+        im_bytes = base64.b64decode(imgb64.split(',')[-1])
+
+        file_name = 'browse_log/' + document_id + '.jpg'
+        res = self.storage().from_('capture-image').remove(file_name)
+        res = self.storage().from_('capture-image').upload(file_name, im_bytes)
+
+        pub_url = self.storage().from_('capture-image').get_public_url(file_name)
+        return pub_url
+
     def insert_browse_paragraph_log(self, browseLog, texts):
         exist_doc = self.select_document(browseLog.get('document').get('url'))
         document = next(iter(exist_doc), None)
@@ -34,16 +48,20 @@ class SupabaseClient:
         # saved_paragraphs = self.select_paragraphs(document['id']) if document else []
         # return reduce(lambda acc, p: acc+p['text'], saved_paragraphs, '')
 
+
         if document is None:
+            doc_id = str(uuid4())
+            img_url = self.upload_document_capture(doc_id, browseLog.get('img'))
             document: Document = {
-                'id': str(uuid4()),
+                'id': doc_id,
                 'title': browseLog.get('document').get('title'),
                 'url': browseLog.get('document').get('url'),
-                'latest_capture_img': browseLog.get('img'),
+                'latest_capture_image_url': img_url,
             }
             data, count = self.client.table("documents").insert(document).execute()
         else:
-            document['latest_capture_img'] = browseLog.get('img')
+            img_url = self.upload_document_capture(document['id'], browseLog.get('img'))
+            document['latest_capture_image_url'] = img_url
             data, count = self.client.table("documents").update(document).eq('id', document['id']).execute()
 
         paragraphs: List(Paragraph) = [

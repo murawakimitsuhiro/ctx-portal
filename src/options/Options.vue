@@ -51,7 +51,7 @@ const latestCapture = computed((): BrowseParagraphLog => {
           </dl>
         </div>
         <div>
-          <img :src="latestCapture.latest_capture_img" class="object-contain" alt="extension icon">
+          <img :src="latestCapture.document_latest_capture_image_url" class="object-contain" alt="extension icon">
         </div>
       </div>
     </div>
@@ -74,9 +74,9 @@ const latestCapture = computed((): BrowseParagraphLog => {
                 <th class="p-2 whitespace-nowrap">
                   <div class="font-semibold text-left">URL</div>
                 </th>
-                <th class="p-2 whitespace-nowrap">
-                  <div class="font-semibold text-left">image</div>
-                </th>
+<!--                <th class="p-2 whitespace-nowrap">-->
+<!--                  <div class="font-semibold text-left">image</div>-->
+<!--                </th>-->
                 <th class="p-2 whitespace-nowrap">
                   <div class="font-semibold text-center">paragraphs</div>
                 </th>
@@ -93,9 +93,9 @@ const latestCapture = computed((): BrowseParagraphLog => {
                 <td class="p-2 whitespace-nowrap">
                   <div class="text-left w-40 truncate font-medium text-green-500">{{ log.document_url }}</div>
                 </td>
-                <td class="p-2 whitespace-nowrap">
-                  <img class="object-contain h-10 transition-all hover:h-60" :src="log.capture_img" alt="screenshot">
-                </td>
+<!--                <td class="p-2 whitespace-nowrap">-->
+<!--                  <img class="object-contain h-10 transition-all hover:h-60" :src="log.capture_img" alt="screenshot">-->
+<!--                </td>-->
                 <td class="p-2 whitespace-nowrap max-w-xs overflow-scroll">
                   <div class="text-xs text-left">{{ log.paragraphs.map(p => p.text).join() }}</div>
                 </td>

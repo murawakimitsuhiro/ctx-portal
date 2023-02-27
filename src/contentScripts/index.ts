@@ -1,7 +1,10 @@
 import { sendMessage } from 'webext-bridge'
+import App from './views/App.vue'
 import { MessageType } from '~/pkg/const/message'
 
 (() => {
+  mountVue()
+
   const openedTime = new Date()
   setTimeout(() => {
     addEventListener('wheel', (_) => {
@@ -14,6 +17,22 @@ import { MessageType } from '~/pkg/const/message'
     }, { passive: true })
   }, 15 * 1000)
 })()
+
+function mountVue() {
+  const container = document.createElement('div')
+  const root = document.createElement('div')
+  const styleEl = document.createElement('link')
+  const shadowDOM = container.attachShadow?.({ mode: __DEV__ ? 'open' : 'closed' }) || container
+  styleEl.setAttribute('rel', 'stylesheet')
+  styleEl.setAttribute('href', browser.runtime.getURL('dist/contentScripts/style.css'))
+  shadowDOM.appendChild(styleEl)
+  shadowDOM.appendChild(root)
+  document.body.appendChild(container)
+  const app = createApp(App)
+  // setupApp(app)
+  app.mount(root)
+}
+
 
 // OCRをjs側で行う場合
 // async function loggingByCapturedImage(document: BrowseDocument, img: string, timestamp: Date) {
