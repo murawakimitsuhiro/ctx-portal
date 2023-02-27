@@ -42,9 +42,7 @@ export const sharedConfig: UserConfig = {
       dts: r('src/components.d.ts'),
       resolvers: [
         // auto import icons
-        IconsResolver({
-          componentPrefix: '',
-        }),
+        IconsResolver(),
       ],
     }),
 

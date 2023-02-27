@@ -33,7 +33,6 @@ function mountVue() {
   app.mount(root)
 }
 
-
 // OCRをjs側で行う場合
 // async function loggingByCapturedImage(document: BrowseDocument, img: string, timestamp: Date) {
 //   const ocrParagraphs = await OCRBroseImage(img)

@@ -2,6 +2,7 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import SearchModal from '~/components/container/search-modal.vue'
 import { useBrowseParagraphLog } from '~/composables/useBroseParagraphLog'
 import { BrowseParagraphLog } from '~/pkg/entity/browse-paragraph-log'
 
@@ -10,7 +11,9 @@ dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/Tokyo')
 // dayjs.tz.guess()
 
-const { browseParagraphLogs } = useBrowseParagraphLog()
+// 通信量節約
+// const { browseParagraphLogs } = useBrowseParagraphLog()
+const browseParagraphLogs = ref([] as BrowseParagraphLog[])
 
 const latestCapture = computed((): BrowseParagraphLog => {
   return browseParagraphLogs.value[0]
@@ -19,6 +22,7 @@ const latestCapture = computed((): BrowseParagraphLog => {
 
 <template>
   <main class="px-4 py-4 text-gray-700 dark:text-gray-200">
+    <search-modal />
     <h2 class="text-lg font-bold">Debug View</h2>
     <div v-if="latestCapture" class="overflow-hidden bg-white shadow sm:rounded-lg my-6">
       <div class="px-4 py-5 sm:px-6">
@@ -74,9 +78,6 @@ const latestCapture = computed((): BrowseParagraphLog => {
                 <th class="p-2 whitespace-nowrap">
                   <div class="font-semibold text-left">URL</div>
                 </th>
-<!--                <th class="p-2 whitespace-nowrap">-->
-<!--                  <div class="font-semibold text-left">image</div>-->
-<!--                </th>-->
                 <th class="p-2 whitespace-nowrap">
                   <div class="font-semibold text-center">paragraphs</div>
                 </th>
@@ -93,9 +94,6 @@ const latestCapture = computed((): BrowseParagraphLog => {
                 <td class="p-2 whitespace-nowrap">
                   <div class="text-left w-40 truncate font-medium text-green-500">{{ log.document_url }}</div>
                 </td>
-<!--                <td class="p-2 whitespace-nowrap">-->
-<!--                  <img class="object-contain h-10 transition-all hover:h-60" :src="log.capture_img" alt="screenshot">-->
-<!--                </td>-->
                 <td class="p-2 whitespace-nowrap max-w-xs overflow-scroll">
                   <div class="text-xs text-left">{{ log.paragraphs.map(p => p.text).join() }}</div>
                 </td>
