@@ -22,12 +22,12 @@ onMounted(() => {
         <div class="absolute align-bottom bg-white rounded-5px text-left overflow-hidden shadow-xl transform transition-all -translate-x-1/2 left-1/2 top-10vh w-650px max-w-screen-90vw dark:bg-gray-800 dark:text-bg-gray-100">
           <div class="relative text-gray-600 focus-within:text-gray-400">
             <div class="p-20px pb-0">
-              <i-uil-search width="24" height="24" class="absolute ml-24px mt-24px" />
+              <i-uil-search width="24" height="24" class="absolute ml-12px mt-11px" />
               <input
-                  id="username"
+                  id="keywords"
                   ref="searchInput"
                   v-model="searchWord"
-                  class="shadow appearance-none border border-gray-400 rounded-5px w-full py-12px px-12px text-gray-700 leading-tight focus:outline-none focus:shadow-outline box-border bg-white pl-43px text-16px dark:bg-gray-700 dark:text-gray-300 dark:focus:shadow-none dark:border-0"
+                  class="appearance-none w-full py-12px px-12px text-gray-700 leading-tight focus:outline-none box-border bg-white pl-43px text-16px"
                   type="search"
                   placeholder="Search for.."
                   @keydown.stop.exact
@@ -37,10 +37,16 @@ onMounted(() => {
                   @keydown.down.prevent="onArrowDown"
                   @keydown.up.prevent="onArrowUp"
                   @keypress.enter.exact.prevent="onEnter"
-                  @keydown.ctrl.n.prevent="onArrowDown"
-                  @keydown.ctrl.p.prevent="onArrowUp"
+                  @keydown.ctrl.j.prevent="onArrowDown"
+                  @keydown.ctrl.k.prevent="onArrowUp"
                   @keydown.esc.prevent="onCloseModal"
               >
+              <div class="overflow-y-scroll max-h-80vh grid grid-cols-2 gap-4 my-4">
+                <div class="bg-gray-200">1</div>
+                <div class="bg-gray-200">2</div>
+                <div class="bg-gray-200">3</div>
+                <div class="bg-gray-200">4</div>
+              </diV>
               <!--              <nav class="m overflow-scroll max-h-60vh" role="navigation">-->
               <!--                <template v-if="searchResult.length">-->
               <!--                  <ul class="pl-0">-->
