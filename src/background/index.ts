@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 import { onMessage } from 'webext-bridge'
-import { captureVisibleTabAndSendNativeApp } from '~/logic'
+import { captureBrowseQueue, captureVisibleTabAndSendNativeApp } from '~/logic'
 import { MessageType } from '~/pkg/const/message'
 
 browser.runtime.onInstalled.addListener((): void => {
