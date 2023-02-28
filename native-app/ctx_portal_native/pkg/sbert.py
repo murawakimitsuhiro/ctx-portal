@@ -3,7 +3,7 @@ import torch
 
 
 class SentenceBertJapanese:
-    def __init__(self, model_name_or_path, device=None):
+    def __init__(self, model_name_or_path='sonoisa/sentence-bert-base-ja-mean-tokens', device=None):
         self.tokenizer = BertJapaneseTokenizer.from_pretrained(model_name_or_path)
         self.model = BertModel.from_pretrained(model_name_or_path)
         self.model.eval()
@@ -36,6 +36,6 @@ class SentenceBertJapanese:
         return torch.stack(all_embeddings)
 
 if __name__ == '__main__':
-    model = SentenceBertJapanese("sonoisa/sentence-bert-base-ja-mean-tokens")
+    model = SentenceBertJapanese()
     sentence_vectors = model.encode(['私は猫です', '私は犬です'])
     print(sentence_vectors)
