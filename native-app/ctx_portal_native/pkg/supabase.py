@@ -4,8 +4,8 @@ import json
 import os
 from uuid import uuid4
 from typing import List
-from pkg.value_object.browse_history import BrowseHistory
-from pkg.value_object.browse_paragraph_log import Document, Paragraph, BrowseParagraphLog
+from value_object.browse_history import BrowseHistory
+from value_object.browse_paragraph_log import Document, Paragraph, BrowseParagraphLog
 from supabase import create_client, Client, PostgrestAPIResponse
 
 class SupabaseClient:

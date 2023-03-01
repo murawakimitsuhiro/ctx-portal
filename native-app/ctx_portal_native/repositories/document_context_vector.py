@@ -8,7 +8,7 @@ sys.path.append(parent_dir)
 
 from pkg.sbert import SentenceBertJapanese
 
-class SessionVectorRepository:
+class DocumentContextVectorRepository:
     def __init__(
             self, 
             host: str, port: int, 
@@ -18,7 +18,7 @@ class SessionVectorRepository:
         self.client = QdrantClient(host=host, port=port)
         self.model = embedding_model
         self.params = params
-        self.collection_name = 'startups'
+        self.collection_name = 'document_contexts'
 
     def recreate(self):
         self.client.recreate_collection(
@@ -51,7 +51,7 @@ class SessionVectorRepository:
 
 if __name__ == '__main__':
     model = SentenceBertJapanese()
-    repo = SessionVectorRepository(host='localhost', port=6333, embedding_model=model)
+    repo = DocumentContextVectorRepository(host='localhost', port=6333, embedding_model=model)
 
     texts = ['私は猫です', '私は犬です', '私はコアラです']
     payload = [
