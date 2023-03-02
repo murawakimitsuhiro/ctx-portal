@@ -2,8 +2,10 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import { onMessage } from 'webext-bridge'
 import SearchModal from '~/components/container/search-modal.vue'
 import { useBrowseParagraphLog } from '~/composables/useBroseParagraphLog'
+import { InnerMessageType } from '~/pkg/const/message'
 import { BrowseParagraphLog } from '~/pkg/entity/browse-paragraph-log'
 
 dayjs.extend(utc)

@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import 'uno.css'
+import { onMessage, sendMessage } from 'webext-bridge'
+import { BackgroundState } from '~/background'
+import { InnerMessageType } from '~/pkg/const/message'
+import { SearchedDocument } from '~/pkg/entity/searched-document'
 
 const showModal = ref(false)
+
+const searchedDocuments = ref([] as SearchedDocument[])
 
 function onCloseModal() {
   showModal.value = false
@@ -10,6 +16,18 @@ function onCloseModal() {
 onMounted(() => {
   if (location.hostname === 'drive.google.com' || location.hostname === 'pgeblnnbkphmknghbdodpmkfbgikknbp')
     showModal.value = true
+
+  // sendMessage(InnerMessageType.GetBackgroundState, {}).then()
+
+  // onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
+  //   console.debug('received from bg mounted', data)
+  //   searchedDocuments.value = data.searchedDocuments
+  // })
+})
+
+onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
+  console.debug('received from bg', data)
+  searchedDocuments.value = data.searchedDocuments
 })
 </script>
 
@@ -42,7 +60,8 @@ onMounted(() => {
                 @keydown.esc.prevent="onCloseModal"
               >
             </div>
-            <div class="overflow-y-scroll max-h-80vh grid grid-cols-1 gap-4 my-4 px-4">
+            {{ JSON.stringify(searchedDocuments) }}
+            <div class="overflow-y-scroll max-h-65vh grid grid-cols-1 gap-4 my-4 px-4">
               <div v-for="i in 10" :key="i" class="bg-slate-50 p-3 rounded-6px">
                 <div class="flex items-center">
                   <img class="shrink-0 w-24px h-24px" src="https://developer.chrome.com/images/meta/favicon-32x32.png" alt="captured_image">

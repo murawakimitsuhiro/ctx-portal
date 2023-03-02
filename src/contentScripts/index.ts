@@ -1,9 +1,15 @@
-import { sendMessage } from 'webext-bridge'
+import { onMessage, sendMessage } from 'webext-bridge'
 import App from './views/App.vue'
-import { MessageType } from '~/pkg/const/message'
+import { InnerMessageType } from '~/pkg/const/message'
 
 (() => {
   mountVue()
+
+  console.debug('called ?')
+
+  // onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
+  //   console.debug('recieve on content_script', data)
+  // })
 
   const openedTime = new Date()
   setTimeout(() => {
@@ -13,7 +19,7 @@ import { MessageType } from '~/pkg/const/message'
       if (elapsed < 30 * 1000)
         return
 
-      sendMessage(MessageType.UserActivity, { title: document.title, url: document.URL }).then()
+      sendMessage(InnerMessageType.UserActivity, { title: document.title, url: document.URL }).then()
     }, { passive: true })
   }, 15 * 1000)
 })()

@@ -1,11 +1,27 @@
+// import type { ProtocolWithReturn } from 'webext-bridge'
+import type { BackgroundState } from '~/background'
 import type { BrowseDocument, UserBrowseLog } from '~/pkg/entity/capture-log'
 
-export const MessageType = {
+export const InnerMessageType = {
   UserActivity: 'user-activity',
   CaptureBrowse: 'capture-browse',
+  GetBackgroundState: 'get-background-state',
+  UpdateBackgroundState: 'update-background-state',
 } as const
 
 export interface MessageDataType {
-  [MessageType.UserActivity]: BrowseDocument
-  [MessageType.CaptureBrowse]: UserBrowseLog
+  [InnerMessageType.UserActivity]: BrowseDocument
+  [InnerMessageType.CaptureBrowse]: UserBrowseLog
+  [InnerMessageType.GetBackgroundState]: {}
+  [InnerMessageType.UpdateBackgroundState]: BackgroundState
+}
+
+export const NativeMessageType = {
+  send: {
+    UserActivity: 'user-activity',
+    SearchContext: 'search-context',
+  },
+  receive: {
+    SearchContext: 'search-context',
+  },
 }

@@ -1,5 +1,6 @@
 import type { Runtime } from 'webextension-polyfill'
 import browser from 'webextension-polyfill'
+import { dummyContext } from '~/pkg/const/dummydata'
 import type { UserBrowseLog } from '~/pkg/entity/capture-log'
 
 export class NativeAppService {
@@ -44,10 +45,19 @@ export class NativeAppService {
     this.port.postMessage({ type: messageType, data })
   }
 
+  public registerHandler(messageType: string, handler: (data: any) => void) {
+    this.port.onMessage.addListener((req) => {
+      if (req.type === messageType) {
+        handler(req.data)
+      }
+    })
+  }
+
   public sendUserActivity(data: UserBrowseLog) {
     this.sendMessage('user-activity', data)
   }
+
+  public sendSearchContext(context: string = dummyContext) {
+    this.sendMessage('search-context', { context })
+  }
 }
-
-
-

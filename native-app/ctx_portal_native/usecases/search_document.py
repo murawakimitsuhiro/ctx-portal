@@ -8,7 +8,6 @@ sys.path.append(parent_dir)
 from value_object.searched_document import SearchedDocument
 from repositories.document_context_vector import DocumentContextVectorRepository
 from repositories.document import DocumentRepository
-from pkg.sbert import SentenceBertJapanese
 
 class SearchDocumentUsecase:
     def __init__(self, document_repository: DocumentRepository, document_context_vector_repository: DocumentContextVectorRepository):
@@ -16,8 +15,8 @@ class SearchDocumentUsecase:
         self.ctx_vectors = document_context_vector_repository
 
     def search_by_context(self, context_text: str) -> List[SearchedDocument]:
-        similer_doc_points = self.ctx_vectors.search(context_text)
-        ids = [p['document_id'] for p in similer_doc_points]
+        similer_ctx_points = self.ctx_vectors.search(context_text)
+        ids = [p['document_id'] for p in similer_ctx_points]
         docs = self.documents.get_by_ids(ids)
         return docs
 
