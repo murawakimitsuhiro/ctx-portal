@@ -14,10 +14,10 @@ class DocumentRepository:
         self.table = client.from_('documents')
 
     def list(self) -> List[SearchedDocument]:
-        return self.table.select('*').limit(10).execute()
+        return self.table.select('*').limit(10).execute().data
         
     def get_by_ids(self, ids: List[UUID]) -> List[SearchedDocument]:
-        return self.table.select('*').in_('id', ids).execute()
+        return self.table.select('*').in_('id', ids).execute().data
 
 
 if __name__ == '__main__':

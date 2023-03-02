@@ -1,9 +1,35 @@
-from repositories.document import DocumentRepository
+from typing import List
+import sys
+from os.path import dirname, abspath
+from postgrest import SyncPostgrestClient
 
+parent_dir = dirname(dirname(abspath(__file__)))
+sys.path.append(parent_dir)
+from value_object.searched_document import SearchedDocument
+from repositories.document_context_vector import DocumentContextVectorRepository
+from repositories.document import DocumentRepository
+from pkg.sbert import SentenceBertJapanese
 
 class SearchDocumentUsecase:
-    def __init__(self, document_repository: DocumentRepository):
-        self.document_repository = document_repository
+    def __init__(self, document_repository: DocumentRepository, document_context_vector_repository: DocumentContextVectorRepository):
+        self.documents = document_repository
+        self.ctx_vectors = document_context_vector_repository
 
-    def execute(self, query: str) -> [Document]:
-        return self.document_repository.search(query)
+    def search_by_context(self, context_text: str) -> List[SearchedDocument]:
+        similer_doc_points = self.ctx_vectors.search(context_text)
+        return similer_doc_points
+
+
+if __name__ == '__main__':
+    from pprint import pprint
+    client = SyncPostgrestClient('http://localhost:3000')
+    doc_repo = DocumentRepository(client)
+    model = SentenceBertJapanese()
+    ctx_repo = DocumentContextVectorRepository(host='localhost', port=6333, embedding_model=model)
+
+    search_doc_usecase = SearchDocumentUsecase(doc_repo, ctx_repo)
+    points = search_doc_usecase.search_by_context('日本の経済地理学')
+    ids = [p['document_id'] for p in points]
+    docs = doc_repo.get_by_ids(ids)
+
+    pprint(docs)
