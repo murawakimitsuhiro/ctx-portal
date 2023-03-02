@@ -1,7 +1,7 @@
 import sys
 from os.path import dirname, abspath
 from qdrant_client import QdrantClient
-from qdrant_client.models import VectorParams, Distance
+from qdrant_client.models import VectorParams, Distance, Batch
 
 parent_dir = dirname(dirname(abspath(__file__)))
 sys.path.append(parent_dir)
@@ -33,6 +33,16 @@ class DocumentContextVectorRepository:
             payload=payload,
             ids=ids,
             batch_size=256
+        )
+    
+    def upsert(self, vectors, payloads, ids=None):
+        self.client.upsert(
+            collection_name=self.collection_name,
+            points=Batch(
+                ids=ids,
+                payloads=payloads,
+                vectors=vectors
+            )
         )
 
     def search(self, text: str, limit: int=20):

@@ -1,6 +1,12 @@
 version: "3"
 services:
-  server:
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - "./qdrant_storage:/qdrant/storage"
+  postgrest:
     image: postgrest/postgrest
     ports:
       - "3000:3000"
