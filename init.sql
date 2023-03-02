@@ -11,3 +11,12 @@ CREATE TABLE IF NOT EXISTS public.documents (
   open_count INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS public.histories (
+  uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id INTEGER NOT NULL,
+  title TEXT,
+  url TEXT NOT NULL,
+  last_visit_time float8 NOT NULL
+);
+COMMENT ON COLUMN public.histories.last_visit_time IS 'unix timestamp';
