@@ -17,19 +17,16 @@ class SearchDocumentUsecase:
 
     def search_by_context(self, context_text: str) -> List[SearchedDocument]:
         similer_doc_points = self.ctx_vectors.search(context_text)
-        return similer_doc_points
+        ids = [p['document_id'] for p in similer_doc_points]
+        docs = self.documents.get_by_ids(ids)
+        return docs
 
 
 if __name__ == '__main__':
     from pprint import pprint
-    client = SyncPostgrestClient('http://localhost:3000')
-    doc_repo = DocumentRepository(client)
-    model = SentenceBertJapanese()
-    ctx_repo = DocumentContextVectorRepository(host='localhost', port=6333, embedding_model=model)
+    from dependency import AppDependencies
 
-    search_doc_usecase = SearchDocumentUsecase(doc_repo, ctx_repo)
-    points = search_doc_usecase.search_by_context('日本の経済地理学')
-    ids = [p['document_id'] for p in points]
-    docs = doc_repo.get_by_ids(ids)
+    search_doc_usecase = AppDependencies().usecases.search_document
 
+    docs = search_doc_usecase.search_by_context('日本の経済地理学')
     pprint(docs)
