@@ -6,3 +6,9 @@ export interface SearchedDocument {
   url: string
   texts: string
 }
+
+export function decodedUrl(document: SearchedDocument): string {
+  const decoded = decodeURIComponent(document.url)
+  // const url = decoded.match(/^(?:https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
+  return decoded.replace(/^https?:\/\//, '') ?? decoded
+}

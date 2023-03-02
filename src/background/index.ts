@@ -8,39 +8,50 @@ import { NativeAppService } from '~/pkg/service/native-app'
 
 export interface BackgroundState {
   searchedDocuments: SearchedDocument[]
+  latestActivatedTabId: number | null
 }
 
 const state: BackgroundState = {
   searchedDocuments: [] as SearchedDocument[],
+  latestActivatedTabId: null,
 }
 
 browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
   console.log('Extension installed')
   // sendTestCapture()
-  NativeAppService.shared().sendSearchContext()
-  NativeAppService.shared().registerHandler(NativeMessageType.receive.SearchContext, (docs) => {
-    state.searchedDocuments = docs
-    sendMessage(InnerMessageType.UpdateBackgroundState, state).then()
-    console.debug('sended from bg', state)
+  NativeAppService.shared().sendSearchContext() // for test
+  NativeAppService.shared().registerHandler(NativeMessageType.receive.SearchContext, (data) => {
+    state.searchedDocuments = data.documents
+    sendStateForLatestActivatedTab()
   })
 })
 
-onMessage(InnerMessageType.UserActivity, async ({ data, sender }) => {
-  await captureVisibleTabAndSendNativeApp(sender.tabId, data)
+browser.tabs.onActivated.addListener(async ({ tabId }) => {
+  state.latestActivatedTabId = tabId
+  sendStateForLatestActivatedTab()
 })
 
-// onMessage(InnerMessageType.GetBackgroundState, ({ sender }) => {
-//   console.debug(sender.tabId)
-//   sendMessage(InnerMessageType.UpdateBackgroundState, state, { context: 'content-script', tabId: sender.tabId })
-//   console.debug('sended with request')
-// })
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+  state.latestActivatedTabId = tabId
+  sendStateForLatestActivatedTab()
+})
 
-browser.tabs.onActivated.addListener(async ({ tabId }) => {
-  sendMessage(InnerMessageType.UpdateBackgroundState, state, { context: 'content-script', tabId })
-  console.debug('sended for ', tabId)
-  // console.log('previous tab', tab)
-  // sendMessage('tab-prev', { title: tab.title }, { context: 'content-script', tabId })
+function sendStateForLatestActivatedTab() {
+  if (state.latestActivatedTabId) {
+    sendMessage(
+      InnerMessageType.UpdateBackgroundState,
+      state,
+      {
+        context: 'content-script',
+        tabId: state.latestActivatedTabId,
+      },
+    ).then()
+  }
+}
+
+onMessage(InnerMessageType.UserActivity, async ({ data, sender }) => {
+  await captureVisibleTabAndSendNativeApp(sender.tabId, data)
 })
 
 

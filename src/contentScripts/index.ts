@@ -1,15 +1,9 @@
-import { onMessage, sendMessage } from 'webext-bridge'
+import { sendMessage } from 'webext-bridge'
 import App from './views/App.vue'
 import { InnerMessageType } from '~/pkg/const/message'
 
 (() => {
   mountVue()
-
-  console.debug('called ?')
-
-  // onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
-  //   console.debug('recieve on content_script', data)
-  // })
 
   const openedTime = new Date()
   setTimeout(() => {
