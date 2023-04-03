@@ -20,7 +20,7 @@ browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
   console.log('Extension installed')
   // sendTestCapture()
-  NativeAppService.shared().sendSearchContext() // for test
+  NativeAppService.shared().sendSearchContext() // ContextSearchのテストのために送っている
   NativeAppService.shared().registerHandler(NativeMessageType.receive.SearchContext, (data) => {
     state.searchedDocuments = data.documents
     sendStateForLatestActivatedTab()

@@ -1,8 +1,7 @@
 import sys
 import pprint
 from os.path import dirname, abspath
-from qdrant_client import QdrantClient
-from qdrant_client.models import VectorParams, Distance, Batch
+from qdrant_client import QdrantClient, models
 
 parent_dir = dirname(dirname(abspath(__file__)))
 sys.path.append(parent_dir)
@@ -14,7 +13,7 @@ class DocumentContextVectorRepository:
             self, 
             host: str, port: int, 
             embedding_model,
-            params: VectorParams = VectorParams(size=768, distance=Distance.COSINE)
+            params: models.VectorParams = models.VectorParams(size=768, distance=models.Distance.COSINE)
     ):
         self.client = QdrantClient(host=host, port=port)
         self.model = embedding_model
@@ -39,7 +38,7 @@ class DocumentContextVectorRepository:
     def upsert(self, vectors, payloads, ids=None):
         self.client.upsert(
             collection_name=self.collection_name,
-            points=Batch(
+            points=models.Batch(
                 ids=ids,
                 payloads=payloads,
                 vectors=vectors

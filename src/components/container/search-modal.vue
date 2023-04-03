@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import 'uno.css'
 import { onMessage } from 'webext-bridge'
-import { dummySearchedDocuments } from '~/pkg/const/dummydata'
 import { InnerMessageType } from '~/pkg/const/message'
-import type { SearchedDocument } from '~/pkg/entity/searched-document';
+import type { SearchedDocument } from '~/pkg/entity/searched-document'
 import { decodedUrl } from '~/pkg/entity/searched-document'
 
 const searchWord = ref('')
 const showModal = ref(false)
 
-const searchedDocuments = ref<SearchedDocument[]>(dummySearchedDocuments)// ref([] as SearchedDocument[])
+const searchedDocuments = ref<SearchedDocument[]>()
 
 function onCloseModal() {
   showModal.value = false

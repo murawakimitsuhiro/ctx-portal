@@ -33,6 +33,8 @@ def migration_from_document_contexts():
     old_repo = DocumentContextVectorRepository(host='localhost', port=6333, embedding_model=model)
     (records, next_offset) = old_repo.scroll()
     print([r.id for r in records])
+    for r in records:
+        print(r.payload)
 
 
 if __name__ == '__main__':
