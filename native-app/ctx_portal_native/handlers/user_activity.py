@@ -25,8 +25,6 @@ if __name__ == '__main__':
     from pkg.util.dummy_data import dummy_browse_log
 
     sb_client = SupabaseClient()
-    last_saved_time = sb_client.select_latest_saved_histories_time()
-    print(datetime.datetime.fromtimestamp(last_saved_time / 1000.0))
 
     # databaseに突っ込んでいたものを削除
     # for d in documents:

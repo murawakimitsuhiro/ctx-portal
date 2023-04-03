@@ -1,4 +1,5 @@
 import sys
+import pprint
 from os.path import dirname, abspath
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance, Batch
@@ -58,21 +59,36 @@ class DocumentContextVectorRepository:
         payloads = [hit.payload for hit in result]
         return payloads
 
+    def scroll(self, offset_id=None):
+        result = self.client.scroll(
+            collection_name=self.collection_name,
+            limit=20,
+            offset=offset_id,
+            with_payload=True,
+            with_vectors=False,
+        )
+        (records, next_point_id) = result
+        return result
+
+
+
 
 if __name__ == '__main__':
     model = SentenceBertJapanese()
     repo = DocumentContextVectorRepository(host='localhost', port=6333, embedding_model=model)
 
-    texts = ['私は猫です', '私は犬です', '私はコアラです']
-    payload = [
-        {'label': 'cat'},
-        {'label': 'dog'},
-        {'label': 'koala'},
-    ]
+    pprint.pprint(repo.scroll())
 
-    sentence_vectors = model.encode(texts).numpy()
+    # texts = ['私は猫です', '私は犬です', '私はコアラです']
+    # payload = [
+    #     {'label': 'cat'},
+    #     {'label': 'dog'},
+    #     {'label': 'koala'},
+    # ]
+
+    # sentence_vectors = model.encode(texts).numpy()
     
-    repo.recreate() # migration
-    repo.upload(sentence_vectors, payload) # insert
-    searched = repo.search('ユーカリ', limit=1) #search
-    print(searched)
+    # repo.recreate() # migration
+    # repo.upload(sentence_vectors, payload) # insert
+    # searched = repo.search('ユーカリ', limit=1) #search
+    # print(searched)

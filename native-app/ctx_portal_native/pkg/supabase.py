@@ -89,7 +89,7 @@ class SupabaseClient:
 
         histories: List(BrowseHistory) = [
             {
-                'id': h.get('id'),
+                'chromium_page_id': h.get('id'),
                 'last_visit_time': h.get('lastVisitTime'),
                 'title': h.get('title'),
                 'url': h.get('url'),
