@@ -64,12 +64,10 @@ class DocumentContextVectorRepository:
             limit=20,
             offset=offset_id,
             with_payload=True,
-            with_vectors=False,
+            with_vectors=True,
         )
         (records, next_point_id) = result
         return result
-
-
 
 
 if __name__ == '__main__':
