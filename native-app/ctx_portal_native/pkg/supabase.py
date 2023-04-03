@@ -41,13 +41,18 @@ class SupabaseClient:
         pub_url = self.storage().from_('capture-image').get_public_url(file_name)
         return pub_url
 
+    def select_latest_saved_histories_time(self):
+        latest_histories = self.client.table("histories").select("last_visit_time")\
+            .order("last_visit_time", desc=True)\
+            .limit(1).execute().data
+        if len(latest_histories) == 0:
+            return 0
+        return latest_histories[0]['last_visit_time']
+
+
     def insert_browse_paragraph_log(self, browseLog, texts):
         exist_doc = self.select_document(browseLog.get('document').get('url'))
         document = next(iter(exist_doc), None)
-
-        # saved_paragraphs = self.select_paragraphs(document['id']) if document else []
-        # return reduce(lambda acc, p: acc+p['text'], saved_paragraphs, '')
-
 
         if document is None:
             doc_id = str(uuid4())
@@ -80,6 +85,8 @@ class SupabaseClient:
             # 'capture_img': browseLog.get('img')
         }
 
+        last_saved_time = self.select_latest_saved_histories_time()
+
         histories: List(BrowseHistory) = [
             {
                 'id': h.get('id'),
@@ -87,7 +94,7 @@ class SupabaseClient:
                 'title': h.get('title'),
                 'url': h.get('url'),
             }
-            for h in browseLog.get('histories')
+            for h in browseLog.get('histories') if h.get('lastVisitTime') > last_saved_time
         ]
 
         data, count = self.client.table("paragraphs").insert(paragraphs).execute()

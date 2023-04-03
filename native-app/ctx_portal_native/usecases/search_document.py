@@ -27,5 +27,5 @@ if __name__ == '__main__':
 
     search_doc_usecase = AppDependencies().usecases.search_document
 
-    docs = search_doc_usecase.search_by_context('日本の経済地理学')
+    docs = search_doc_usecase.search_by_context('日本の経済地理学') # 本当はここに履歴データのstringを渡す
     pprint(docs)

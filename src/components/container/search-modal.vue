@@ -60,7 +60,7 @@ onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
                 <div class="flex items-center">
                   <img class="shrink-0 w-16px h-16px" src="https://developer.chrome.com/images/meta/favicon-32x32.png" alt="captured_image">
                   <p class="mx-2 truncate text-base font-semibold my-0">{{ doc.title }}</p>
-                  <p class="shrink-20 min-w-200px truncate text-slate-500 my-0 ml-auto">
+                  <p class="shrink-20 min-w-200px truncate text-slate-500 my-0 ml-auto text-right">
                     {{ decodedUrl(doc) }}
                   </p>
                 </div>
