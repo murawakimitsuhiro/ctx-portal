@@ -27,6 +27,15 @@ export async function getManifest() {
       // @ts-expect-error
       type: 'module',
     },
+    commands: {
+      'open-search-modal': {
+        suggested_key: {
+          default: 'Alt+K',
+          mac: 'Alt+K',
+        },
+        description: 'Open search modal',
+      },
+    },
     icons: {
       16: './assets/icon-512.png',
       48: './assets/icon-512.png',

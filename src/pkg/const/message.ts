@@ -7,6 +7,7 @@ export const InnerMessageType = {
   CaptureBrowse: 'capture-browse',
   GetBackgroundState: 'get-background-state',
   UpdateBackgroundState: 'update-background-state',
+  OnOpenSearchModal: 'on-open-search-modal',
 } as const
 
 export interface MessageDataType {
@@ -14,6 +15,7 @@ export interface MessageDataType {
   [InnerMessageType.CaptureBrowse]: UserBrowseLog
   [InnerMessageType.GetBackgroundState]: {}
   [InnerMessageType.UpdateBackgroundState]: BackgroundState
+  [InnerMessageType.OnOpenSearchModal]: BackgroundState
 }
 
 export const NativeMessageType = {

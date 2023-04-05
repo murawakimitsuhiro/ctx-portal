@@ -15,12 +15,25 @@ function onCloseModal() {
 }
 
 onMounted(() => {
-  if (location.hostname === 'drive.google.com' || location.hostname === 'pgeblnnbkphmknghbdodpmkfbgikknbp')
-    showModal.value = true
+  // if (location.hostname === 'drive.google.com' || location.hostname === 'pgeblnnbkphmknghbdodpmkfbgikknbp')
+  //   showModal.value = true
+})
+
+// focus to input when modal open
+const searchInput = ref<HTMLInputElement | null>(null)
+watch(showModal, async(next, _) => {
+  await nextTick()
+  if (next && searchInput.value)
+    searchInput.value.focus()
 })
 
 onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
-  console.debug(data.searchedDocuments)
+  console.debug('updated background state', data.searchedDocuments)
+  searchedDocuments.value = data.searchedDocuments
+})
+
+onMessage(InnerMessageType.OnOpenSearchModal, ({ data }) => {
+  showModal.value = !showModal.value
   searchedDocuments.value = data.searchedDocuments
 })
 </script>
@@ -93,3 +106,12 @@ onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
     </div>
   </transition>
 </template>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .1s ease;
+}
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+</style>

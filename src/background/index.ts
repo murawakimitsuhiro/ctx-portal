@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 // import { ref } from 'vue'
-import { onMessage, sendMessage } from 'webext-bridge'
+import { Destination, onMessage, sendMessage } from 'webext-bridge'
 import { captureVisibleTabAndSendNativeApp } from '~/logic'
 import { InnerMessageType, NativeMessageType } from '~/pkg/const/message'
 import type { SearchedDocument } from '~/pkg/entity/searched-document'
@@ -16,6 +16,11 @@ const state: BackgroundState = {
   latestActivatedTabId: null,
 }
 
+async function currentActiveTabDestination(): Promise<Destination> {
+  const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
+  return { context: 'content-script', tabId: tab.id! }
+}
+
 browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
   console.log('Extension installed')
@@ -25,6 +30,13 @@ browser.runtime.onInstalled.addListener((): void => {
     state.searchedDocuments = data.documents
     sendStateForLatestActivatedTab()
   })
+})
+
+browser.commands.onCommand.addListener(async (command) => {
+  if (command === 'open-search-modal') {
+    const destination = await currentActiveTabDestination()
+    sendMessage(InnerMessageType.OnOpenSearchModal, state, destination).then()
+  }
 })
 
 browser.tabs.onActivated.addListener(async ({ tabId }) => {
