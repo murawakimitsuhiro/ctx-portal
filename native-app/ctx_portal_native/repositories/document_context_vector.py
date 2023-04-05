@@ -61,7 +61,7 @@ class DocumentContextVectorRepository:
     def scroll(self, offset_id=None):
         result = self.client.scroll(
             collection_name=self.collection_name,
-            limit=20,
+            limit=500,
             offset=offset_id,
             with_payload=True,
             with_vectors=True,

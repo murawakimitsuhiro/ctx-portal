@@ -24,22 +24,23 @@ class DocumentOpenContext:
     def get_updated_at(self) -> str:
         return datetime.datetime.fromtimestamp(self.updated_at/1000).isoformat()
 
-    def point_struct(self, vectors: models.VectorStruct) -> models.PointStruct:
+    def point_struct(self, vector: models.VectorStruct) -> models.PointStruct:
         return models.PointStruct(
-            id=self.history_uuid,
+            id=str(self.history_uuid),
             payload=vars(self),
-            vector=vectors,
+            vector=vector,
         )
 
 if __name__ == '__main__':
     from pprint import pprint
+    import uuid
     # dummy document open context dict
     doc_open_context_dict = {
         "created_at": 1677852806805.98,
         "title": "test",
         "url": "https://example.com",
         "document_uuid": "test-test",
-        "history_uuid": "test-test",
+        "history_uuid": uuid.uuid4(),
     }
     doc_open_ctx = DocumentOpenContext.from_dict(doc_open_context_dict)
     pprint(doc_open_ctx)
