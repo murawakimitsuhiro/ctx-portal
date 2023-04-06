@@ -14,8 +14,8 @@ dayjs.tz.setDefault('Asia/Tokyo')
 // dayjs.tz.guess()
 
 // 通信量節約
-// const { browseParagraphLogs } = useBrowseParagraphLog()
-const browseParagraphLogs = ref([] as BrowseParagraphLog[])
+const { browseParagraphLogs } = useBrowseParagraphLog()
+// const browseParagraphLogs = ref([] as BrowseParagraphLog[])
 
 const latestCapture = computed((): BrowseParagraphLog => {
   return browseParagraphLogs.value[0]

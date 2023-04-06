@@ -1,74 +1,65 @@
 <script setup lang="ts">
 import 'uno.css'
-import { onMessage } from 'webext-bridge'
-import { InnerMessageType } from '~/pkg/const/message'
-import type { SearchedDocument } from '~/pkg/entity/searched-document'
+import { SearchModalPresenter } from '~/contentScripts/presenters/search-modal'
+import type { UUID } from '~/pkg/entity/basic'
 import { decodedUrl } from '~/pkg/entity/searched-document'
 
-const searchWord = ref('')
-const showModal = ref(false)
-
-const searchedDocuments = ref<SearchedDocument[]>()
-
-function onCloseModal() {
-  showModal.value = false
-}
+const { state, action } = SearchModalPresenter()
 
 onMounted(() => {
-  // if (location.hostname === 'drive.google.com' || location.hostname === 'pgeblnnbkphmknghbdodpmkfbgikknbp')
-  //   showModal.value = true
+  // if (location.hostname === 'drive.google.com' || location.hostname === 'pgeblnnbkphmknghbdodpmkfbgikknbp'
+  // showModalDomestic.value = true
 })
 
 // focus to input when modal open
 const searchInput = ref<HTMLInputElement | null>(null)
-watch(showModal, async(next, _) => {
+watch(state.showModal, async(next, _) => {
   await nextTick()
   if (next && searchInput.value)
     searchInput.value.focus()
 })
 
-onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
-  console.debug('updated background state', data.searchedDocuments)
-  searchedDocuments.value = data.searchedDocuments
-})
-
-onMessage(InnerMessageType.OnOpenSearchModal, ({ data }) => {
-  showModal.value = !showModal.value
-  searchedDocuments.value = data.searchedDocuments
-})
+function isSelectedDoc(docId: UUID): boolean {
+  return state.selectedDoc.value?.id === docId
+}
 </script>
 
 <template>
   <transition name="fade">
-    <div v-if="showModal" class="fixed z-99999 inset-0 overflow-y-auto text-12px" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div v-if="state.showModal.value" class="fixed z-99999 inset-0 overflow-y-auto text-12px" aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <div class="position relative min-h-screen">
-        <div class="fixed inset-0 bg-black bg-opacity-60 transition-opacity" aria-hidden="true" @click="onCloseModal"></div>
+        <div class="fixed inset-0 bg-black bg-opacity-60 transition-opacity" aria-hidden="true" @click="action.closeModal()"></div>
         <div class="absolute align-bottom bg-white rounded-8px text-left overflow-hidden shadow-xl transform transition-all -translate-x-1/2 -translate-y-1/2 left-1/2 top-1\/2 w-95vw max-w-screen-90vw dark:bg-gray-800 dark:text-bg-gray-100">
-<!--          <div class="relative text-gray-600 focus-within:text-gray-400">-->
           <div class="relative text-gray-600">
             <div class="p-20px pb-0">
               <i-uil-search width="16" height="16" class="absolute ml-12px mt-10.5px" />
               <input
                 id="keywords"
                 ref="searchInput"
-                v-model="searchWord"
                 class="appearance-none w-full py-8px px-8px text-gray-700 leading-tight border-0 focus:outline-none box-border bg-white pl-43px text-16px"
                 type="search"
-                placeholder="Search Documents / Histories / Bookmarks"
+                placeholder="Search Space"
+                :value="state.searchQuery.value"
+                @input="action.setSearchQuery($event.target.value)"
                 @keydown.stop.exact
                 @keypress.stop.exact
                 @keyup.stop.exact
-                @keypress.ctrl.enter.exact.prevent="onEnterWithControl"
-                @keydown.down.prevent="onArrowDown"
-                @keydown.up.prevent="onArrowUp"
-                @keypress.enter.exact.prevent="onEnter"
-                @keydown.ctrl.j.prevent="onArrowDown"
-                @keydown.ctrl.k.prevent="onArrowUp"
-                @keydown.esc.prevent="onCloseModal"
+                @keypress.ctrl.enter.exact.prevent="action.openSelectedDoc(true)"
+                @keydown.down.prevent="action.setSelectionDown()"
+                @keydown.up.prevent="action.setSelectionUp()"
+                @keypress.enter.exact.prevent="action.openSelectedDoc()"
+                @keydown.ctrl.j.prevent="action.setSelectionDown()"
+                @keydown.ctrl.k.prevent="action.setSelectionUp()"
+                @keydown.esc.prevent="action.closeModal()"
+                @keydown.ctrl.c.prevent="action.closeModal()"
               >
             </div>
-            <div class="overflow-y-scroll max-h-75vh grid grid-cols-1 gap-1 mt-4 px-4 divide-y">
-              <div v-for="doc in searchedDocuments" :key="doc.url" class="bg-slate-70 p-3 rounded-6px">
+            <div class="overflow-y-scroll max-h-75vh grid grid-cols-1 gap-1 mt-4 px-4">
+              <div
+                v-for="doc in state.searchedDocs.value" :key="doc.id"
+                class="bg-slate-70 p-3 rounded-6px"
+                :class="{ 'bg-slate-100': isSelectedDoc(doc.id) }"
+              >
                 <div class="flex items-center">
                   <img class="shrink-0 w-16px h-16px" src="https://developer.chrome.com/images/meta/favicon-32x32.png" alt="captured_image">
                   <p class="mx-2 truncate text-base font-semibold my-0">{{ doc.title }}</p>
