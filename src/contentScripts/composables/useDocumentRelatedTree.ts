@@ -1,5 +1,5 @@
 import type { SearchedDocument } from '~/pkg/entity/searched-document'
-import { ScrapboxPage } from '~/pkg/service/scrapbox'
+import type { ScrapboxPage } from '~/pkg/service/scrapbox'
 
 // 階層構造をによって表現されたドキュメントの関連ファイル
 // 選択状態を管理する
@@ -22,15 +22,17 @@ export const useDocumentRelatedTree = () => {
   const relatedDocuments = computed<[string: ScrapboxPage[]][]>(() => {
     if (_lastHierarchy.value < 0)
       return []
-    const related = relatedPages(documents.value[_selectedIndexList.value[0]], _selectedIndexList.value.slice(1))
-    return related
-    // return _selectedIndexList.value.reduce((acc, cur) => {
-    //   const currentHierarchySelectedDoc = _lastHierarchy === 0 ? documents[cur] : acc[acc.length - 1][cur]
-    //   acc[acc.length - 1].isSelected = true
-    //   if (Object.hasOwn(currentHierarchySelectedDoc, 'links'))
-    //     return acc.concat(relatedDocumentByIndex(currentHierarchySelectedDoc as ScrapboxPage, cur))
-    //   return acc.concat([])
-    // }, [])
+    return relatedPages(documents.value[_selectedIndexList.value[0]], _selectedIndexList.value.slice(1))
+  })
+
+  const focusedDocument = computed<SearchedDocument | null>(() => {
+    if (_lastHierarchy.value < 0)
+      return null
+    if (_lastHierarchy.value === 0)
+      return documents.value[_selectedIndexList.value[0]]
+
+    const focusedLayerDocs = relatedDocuments.value[relatedDocuments.value.length - 1]
+    return Object.values(focusedLayerDocs).flat(1)[_selectedIndexList.value[_lastHierarchy.value]]
   })
 
   const setDocuments = (newDocuments: SearchedDocument[]) => {
@@ -41,7 +43,6 @@ export const useDocumentRelatedTree = () => {
   const setSelectionDown = () => {
     if (_lastHierarchy.value < 0) {
       _selectedIndexList.value = [0]
-      console.debug('set indexes', _selectedIndexList.value)
       return
     }
 
@@ -58,32 +59,26 @@ export const useDocumentRelatedTree = () => {
   const setSelectionUp = () => {
     if (_lastHierarchy.value < 0) {
       _selectedIndexList.value = [0]
-      console.debug('set indexes', _selectedIndexList.value)
       return
     }
 
     if (_selectedIndexList.value[_lastHierarchy.value] > 0)
       _selectedIndexList.value[_lastHierarchy.value]--
-
-    console.debug('set indexes', _selectedIndexList.value)
   }
 
   const setSelectionLeft = () => {
     if (_lastHierarchy.value >= 0)
       _selectedIndexList.value.pop()
-
-    console.debug('set indexes', _selectedIndexList.value)
   }
 
   const setSelectionRight = () => {
     _selectedIndexList.value.push(0)
-
-    console.debug('set indexes', _selectedIndexList.value)
   }
 
   return {
     documents: readonly(documents),
     relatedDocuments: readonly(relatedDocuments),
+    focusedDocument: readonly(focusedDocument),
     setDocuments,
     setSelectionDown,
     setSelectionUp,

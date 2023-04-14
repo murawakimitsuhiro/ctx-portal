@@ -1,6 +1,7 @@
 import { onMessage } from 'webext-bridge'
 import { useDocumentRelatedTree } from '~/contentScripts/composables/useDocumentRelatedTree'
 import { InnerMessageType } from '~/pkg/const/message'
+import { openUrl } from '~/pkg/entity/searched-document'
 
 export const SearchModalPresenter = () => {
   const documentTree = useDocumentRelatedTree()
@@ -20,12 +21,14 @@ export const SearchModalPresenter = () => {
   }
 
   const openSelectedDoc = (openInNewTab: Boolean = false) => {
-    // console.debug('openSelectedDoc', openInNewTab, selectedDoc.value)
-    // const url = selectedDoc.value?.url
-    // if (openInNewTab)
-    //   window.open(url!, '_blank')
-    // else
-    //   window.location.href = url!
+    if (documentTree.focusedDocument.value === null)
+      return
+
+    const url = openUrl(documentTree.focusedDocument.value)
+    if (openInNewTab)
+      window.open(url!, '_blank')
+    else
+      window.location.href = url!
   }
 
   onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {

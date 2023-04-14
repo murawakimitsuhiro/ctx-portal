@@ -18,3 +18,11 @@ export function isPdf(document: SearchedDocument): boolean {
   const url = new URL(document.url)
   return url.pathname.includes('mrwk-space') || url.hostname.includes('drive.google.com')
 }
+
+export function openUrl(document: SearchedDocument): string {
+  if (!isPdf(document))
+    return document.url
+
+  return 'https://google.com'
+}
+
