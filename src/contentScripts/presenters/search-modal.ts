@@ -5,12 +5,7 @@ import type { SearchedDocument } from '~/pkg/entity/searched-document'
 
 
 export const SearchModalPresenter = () => {
-  const {
-    documents,
-    setDocuments,
-    setSelectionDown,
-    setSelectionUp,
-  } = useDocumentRelatedTree()
+  const documentTree = useDocumentRelatedTree()
   const showModal = ref(false)
   const searchQuery = ref('')
 
@@ -41,25 +36,31 @@ export const SearchModalPresenter = () => {
   onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
     console.debug('updated background state (presenter)', data.searchedDocuments)
     // _setSearchedDocs(data.searchedDocuments)
-    setDocuments(data.searchedDocuments)
+    documentTree.setDocuments(data.searchedDocuments)
   })
 
   onMessage(InnerMessageType.OnOpenSearchModal, ({ data }) => {
     showModal.value = !showModal.value
-    setDocuments(data.searchedDocuments)
+    documentTree.setDocuments(data.searchedDocuments)
     // _setSearchedDocs(data.searchedDocuments)
   })
 
   return {
     state: {
-      documents,
+      documents: documentTree.documents,
+      relatedDocuments: documentTree.relatedDocuments,
       showModal: readonly(showModal),
       // searchedDocs: readonly(searchedDocs),
       // selectedDoc: readonly(selectedDoc),
       searchQuery: readonly(searchQuery),
     },
     action: {
-      toggleModalShow, closeModal, setSelectionDown, setSelectionUp, openSelectedDoc, setSearchQuery,
+      toggleModalShow,
+      closeModal,
+      setSelectionDown: documentTree.setSelectionDown,
+      setSelectionUp: documentTree.setSelectionUp,
+      openSelectedDoc,
+      setSearchQuery,
     },
   }
 }

@@ -12,6 +12,7 @@ export const useDocumentRelatedTree = () => {
   })
 
   const documents = computed<SearchedDocument[]>(() => {
+    console.debug('documents')
     if (_lastHierarchy.value < 0)
       return _documents.value
     return _documents.value.map((doc, index) => {
@@ -19,14 +20,23 @@ export const useDocumentRelatedTree = () => {
     })
   })
 
-  const relatedDocuments = computed<SearchedDocument[][]>(() => {
+  const relatedDocuments = computed<[string: ScrapboxPage[]][]>(() => {
+    console.debug('related calc ', _selectedIndexList)
+    console.debug('related calc')
+    if (_lastHierarchy.value < 0)
+      return []
+    const related = relatedPages(documents.value[_selectedIndexList.value[0]], [])
+    console.debug('related', related)
+    return related
+
+
     // return _selectedIndexList.value.reduce((acc, cur) => {
-    //   const currentHierarchySelectedDoc = acc[acc.length - 1]
+    //   const currentHierarchySelectedDoc = _lastHierarchy === 0 ? documents[cur] : acc[acc.length - 1][cur]
     //   acc[acc.length - 1].isSelected = true
     //   if (Object.hasOwn(currentHierarchySelectedDoc, 'links'))
     //     return acc.concat(relatedDocumentByIndex(currentHierarchySelectedDoc as ScrapboxPage, cur))
     //   return acc.concat([])
-    // }, _documents.value)
+    // }, [])
   })
 
   const setDocuments = (newDocuments: SearchedDocument[]) => {
@@ -61,7 +71,21 @@ export const useDocumentRelatedTree = () => {
     console.debug('set indexes', _selectedIndexList.value)
   }
 
-  return { documents: readonly(documents), setDocuments, setSelectionDown, setSelectionUp }
+  return {
+    documents: readonly(documents),
+    relatedDocuments: readonly(relatedDocuments),
+    setDocuments,
+    setSelectionDown,
+    setSelectionUp,
+  }
+}
+
+function relatedPages(doc: SearchedDocument | ScrapboxPage, selectedIndexes: number[]): [string: ScrapboxPage[]][] {
+  console.debug('related calc for ', doc.title)
+  console.debug('related calc for ', doc.links)
+  if (!Object.hasOwn(doc, 'links'))
+    return []
+  return [(doc as ScrapboxPage).links]
 }
 
 function relatedDocumentByIndex(scbPage: ScrapboxPage, index: number) {

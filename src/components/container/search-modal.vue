@@ -54,9 +54,14 @@ watch(state.showModal, async(next, _) => {
                 @keydown.ctrl.c.prevent="action.closeModal()"
               >
             </div>
-<!--            <div>-->
-<!--              {{ state.documents.value.length }}-->
-<!--            </div>-->
+
+            <div>
+              related page count : {{ state.relatedDocuments.value.length }}
+              <div v-for="relatedLinks in state.relatedDocuments.value">
+                links number : {{ Object.keys(relatedLinks) }}
+              </div>
+            </div>
+
             <div class="overflow-y-scroll max-h-75vh grid grid-cols-1 gap-1 mt-16px px-16px">
               <div
                 v-for="doc in state.documents.value" :key="doc.id"
