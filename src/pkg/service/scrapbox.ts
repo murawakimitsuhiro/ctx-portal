@@ -9,6 +9,7 @@ export interface ScrapboxPage {
   image: string | null
   url: string
   links: [string: ScrapboxPage[]]
+  isSelected: boolean
 }
 
 export function getRelation(url: URL) {

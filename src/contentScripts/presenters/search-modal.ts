@@ -50,6 +50,8 @@ export const SearchModalPresenter = () => {
       closeModal,
       setSelectionDown: documentTree.setSelectionDown,
       setSelectionUp: documentTree.setSelectionUp,
+      setSelectionLeft: documentTree.setSelectionLeft,
+      setSelectionRight: documentTree.setSelectionRight,
       openSelectedDoc,
       setSearchQuery,
     },

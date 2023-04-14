@@ -20,15 +20,10 @@ export const useDocumentRelatedTree = () => {
   })
 
   const relatedDocuments = computed<[string: ScrapboxPage[]][]>(() => {
-    console.debug('related calc ', _selectedIndexList)
-    console.debug('related calc')
     if (_lastHierarchy.value < 0)
       return []
-    const related = relatedPages(documents.value[_selectedIndexList.value[0]], [])
-    console.debug('related', related)
+    const related = relatedPages(documents.value[_selectedIndexList.value[0]], _selectedIndexList.value.slice(1))
     return related
-
-
     // return _selectedIndexList.value.reduce((acc, cur) => {
     //   const currentHierarchySelectedDoc = _lastHierarchy === 0 ? documents[cur] : acc[acc.length - 1][cur]
     //   acc[acc.length - 1].isSelected = true
@@ -52,9 +47,12 @@ export const useDocumentRelatedTree = () => {
 
     if (_lastHierarchy.value === 0 && documents.value.length > _selectedIndexList.value[0] + 1) {
       _selectedIndexList.value[0]++
-      console.debug('set indexes', _selectedIndexList.value)
       return
     }
+
+    const currentHierarchyItemLength = Object.values(relatedDocuments.value[_lastHierarchy.value - 1]).flat(1).length
+    if (currentHierarchyItemLength > _selectedIndexList.value[_lastHierarchy.value] + 1)
+      _selectedIndexList.value[_lastHierarchy.value]++
   }
 
   const setSelectionUp = () => {
@@ -70,21 +68,48 @@ export const useDocumentRelatedTree = () => {
     console.debug('set indexes', _selectedIndexList.value)
   }
 
+  const setSelectionLeft = () => {
+    if (_lastHierarchy.value >= 0)
+      _selectedIndexList.value.pop()
+
+    console.debug('set indexes', _selectedIndexList.value)
+  }
+
+  const setSelectionRight = () => {
+    _selectedIndexList.value.push(0)
+
+    console.debug('set indexes', _selectedIndexList.value)
+  }
+
   return {
     documents: readonly(documents),
     relatedDocuments: readonly(relatedDocuments),
     setDocuments,
     setSelectionDown,
     setSelectionUp,
+    setSelectionLeft,
+    setSelectionRight,
   }
 }
 
 function relatedPages(doc: SearchedDocument | ScrapboxPage, selectedIndexes: number[]): [string: ScrapboxPage[]][] {
-  console.debug('related calc for ', doc.title)
-  console.debug('related calc for ', doc.links)
   if (!Object.hasOwn(doc, 'links'))
     return []
-  return [(doc as ScrapboxPage).links]
+
+  const links = (doc as ScrapboxPage).links
+  if (selectedIndexes.length === 0)
+    return [links]
+
+  let counter = 0
+  Object.values(links).forEach((pages) => {
+    pages.forEach((page) => {
+      page.isSelected = false
+      if (counter === selectedIndexes[0])
+        page.isSelected = true
+      counter++
+    })
+  })
+  return [links]
 }
 
 function relatedDocumentByIndex(scbPage: ScrapboxPage, index: number) {
