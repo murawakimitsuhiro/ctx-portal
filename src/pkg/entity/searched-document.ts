@@ -5,6 +5,7 @@ export interface SearchedDocument {
   title: string
   url: string
   texts: string
+  isSelected: Boolean
 }
 
 export function decodedUrl(document: SearchedDocument): string {

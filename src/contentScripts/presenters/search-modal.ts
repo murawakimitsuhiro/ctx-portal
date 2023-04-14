@@ -1,16 +1,17 @@
 import { onMessage } from 'webext-bridge'
+import { useDocumentRelatedTree } from '~/contentScripts/composables/useDocumentRelatedTree'
 import { InnerMessageType } from '~/pkg/const/message'
 import type { SearchedDocument } from '~/pkg/entity/searched-document'
 
-export const SearchModalPresenter = () => {
-  const _selectedIndex = ref<number | null>(null)
 
+export const SearchModalPresenter = () => {
+  const {
+    documents,
+    setDocuments,
+    setSelectionDown,
+    setSelectionUp,
+  } = useDocumentRelatedTree()
   const showModal = ref(false)
-  const searchedDocs = ref<SearchedDocument[]>([])
-  const selectedDoc = computed<SearchedDocument | null>(() => {
-    // return _selectedIndex.value ? searchedDocs.value[_selectedIndex.value] : null
-    return searchedDocs.value[_selectedIndex.value ?? 0]
-  })
   const searchQuery = ref('')
 
   const toggleModalShow = () => {
@@ -21,56 +22,40 @@ export const SearchModalPresenter = () => {
     showModal.value = false
   }
 
-  const setSelectionDown = () => {
-    if (_selectedIndex.value === null) {
-      _selectedIndex.value = 0 // searchedDocs.value.length - 1
-      return
-    }
-    if (searchedDocs.value.length > _selectedIndex.value + 1)
-      _selectedIndex.value++
-  }
-  const setSelectionUp = () => {
-    if (_selectedIndex.value === null) {
-      _selectedIndex.value = 0 // searchedDocs.value.length - 1
-      return
-    }
-
-    if (_selectedIndex.value > 0)
-      _selectedIndex.value--
-  }
-
-  const _setSearchedDocs = (docs: SearchedDocument[]) => {
-    searchedDocs.value = docs
-  }
-
   const setSearchQuery = (query: string) => {
     searchQuery.value = query
   }
 
   const openSelectedDoc = (openInNewTab: Boolean = false) => {
-    console.debug('openSelectedDoc', openInNewTab, selectedDoc.value)
-    const url = selectedDoc.value?.url
-    if (openInNewTab)
-      window.open(url!, '_blank')
-    else
-      window.location.href = url!
+    // console.debug('openSelectedDoc', openInNewTab, selectedDoc.value)
+    // const url = selectedDoc.value?.url
+    // if (openInNewTab)
+    //   window.open(url!, '_blank')
+    // else
+    //   window.location.href = url!
   }
+
+  // const setSelectionDown = () => _documentTree.setSelectionDown()
+  // const setSelectionUp = () => _documentTree.setSelectionUp()
 
   onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
     console.debug('updated background state (presenter)', data.searchedDocuments)
-    _setSearchedDocs(data.searchedDocuments)
+    // _setSearchedDocs(data.searchedDocuments)
+    setDocuments(data.searchedDocuments)
   })
 
   onMessage(InnerMessageType.OnOpenSearchModal, ({ data }) => {
     showModal.value = !showModal.value
-    _setSearchedDocs(data.searchedDocuments)
+    setDocuments(data.searchedDocuments)
+    // _setSearchedDocs(data.searchedDocuments)
   })
 
   return {
     state: {
+      documents,
       showModal: readonly(showModal),
-      searchedDocs: readonly(searchedDocs),
-      selectedDoc: readonly(selectedDoc),
+      // searchedDocs: readonly(searchedDocs),
+      // selectedDoc: readonly(selectedDoc),
       searchQuery: readonly(searchQuery),
     },
     action: {

@@ -45,9 +45,8 @@ function toScrapboxPage(json: any, projectName: string): ScrapboxPage {
 
     // external link
     if (Object.hasOwn(json.relatedPages, 'projectLinks1hop')) {
-      if (json.relatedPages.projectLinks1hop.length > 0) {
+      if (json.relatedPages.projectLinks1hop.length > 0)
         links['Related'] = json.relatedPages.projectLinks1hop.map((p: any) => toScrapboxPage(p, p.projectName))
-      }
     }
   }
 

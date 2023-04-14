@@ -19,9 +19,9 @@ watch(state.showModal, async(next, _) => {
     searchInput.value.focus()
 })
 
-function isSelectedDoc(docId: UUID): boolean {
-  return state.selectedDoc.value?.id === docId
-}
+// function isSelectedDoc(docId: UUID): boolean {
+//   return state.selectedDoc.value?.id === docId
+// }
 </script>
 
 <template>
@@ -54,11 +54,14 @@ function isSelectedDoc(docId: UUID): boolean {
                 @keydown.ctrl.c.prevent="action.closeModal()"
               >
             </div>
+<!--            <div>-->
+<!--              {{ state.documents.value.length }}-->
+<!--            </div>-->
             <div class="overflow-y-scroll max-h-75vh grid grid-cols-1 gap-1 mt-16px px-16px">
               <div
-                v-for="doc in state.searchedDocs.value" :key="doc.id"
+                v-for="doc in state.documents.value" :key="doc.id"
                 class="bg-slate-70 p-12px rounded-6px"
-                :class="{ 'bg-slate-100': isSelectedDoc(doc.id) }"
+                :class="{ 'bg-slate-100': doc.isSelected }"
               >
                 <div class="flex items-center">
                   <img class="shrink-0 w-16px h-16px" src="https://developer.chrome.com/images/meta/favicon-32x32.png" alt="captured_image">
@@ -67,11 +70,20 @@ function isSelectedDoc(docId: UUID): boolean {
                     {{ decodedUrl(doc) }}
                   </p>
                 </div>
-                <p class="truncate my-0 mt-1">
-                  ベクトルデータベースPinecone を試す| npaka - note,「Pinecone」は、シブルなAPIを提供するフルマネージドなトルデータベ,ースです高性能なペクトル検索アプリケーションを簡単に構築することが,の人はこちらも検索,ベクトル,密トルベクトル,度検索,ベクトル特化型データベースサービスで,一本記事では、マネージド・ベクトル・データベースの「Pinecone」を活用して、,セマンティック・キーワード検索を実施していきます。,あらゆるデータのアクセスを実現するGoogle のベクトル,一ベクトル検索:Google 検索、YouTube、Google Play などを支える技術,来、ステムの情報検索基盤はリレーショナルデータベースと全文検索,非構造化データを高速処理、ベクトルデータベースの.…,一高次元ベクトルデータベースを手がけるがこのほど、シリーズB+で6000,万ドル(約86億円)を調達した。出資を主導したのはサウジアラムコ傘下.…,pdf,化ベルデータベースのための引構造-CORE,川本淳平著一あらまし本論文では,暗号化ベトルデータベースにおいて類似ベクトルを検索,する際の検索結.候補を削減するフィルタリング手法を提案する,9ページ,) flearea,データベース-Vector,A5:SQL(22.09.21公開18.683K):汎用SQL開発環境/ER図ツール(入力補完・SQLのGUI編,集機能を備えるER図も編集可能フリーソフト:4.5.,blog,ベクトル近傍検索技術とは?Google を支える最先端技術と,一ここからは、このトル検索とVertex Matching Engine について深掘り.…,来システムで情報を検索するときは、データベースまたは全文.…,ベクトル類似性検索とは(前)-日経BP,一方法の1つは、個々の楽曲が持つ特徴をいくつかの切り口で数値化し、それぞれの特徴値を組み合わせた「ベクトル」を作成して、データベース
+                <p v-if="doc.texts && doc.texts.length > 0" class="truncate my-0 mt-1">
+                  {{ doc.texts }}
                 </p>
               </div>
             </diV>
+
+<!--            <div v-for="(docs, index) in state.documents.value">-->
+<!--            </div>-->
+
+<!--              <div-->
+<!--                v-for="doc in state.searchedDocs.value" :key="doc.id"-->
+<!--                class="bg-slate-70 p-12px rounded-6px"-->
+<!--                :class="{ 'bg-slate-100': isSelectedDoc(doc.id) }"-->
+<!--              >-->
             <div class="flex border-t-1px border-b-0 border-l-0 border-r-0 border-t-gray-200 h-40px justify-between px-20px items-center border-solid text-11px text-gray-500 dark:border-t-gray-700 dark:text-gray-200 rounded-b-5px">
               <div class="flex">
                 <p class="mr-10px">
@@ -86,7 +98,7 @@ function isSelectedDoc(docId: UUID): boolean {
                   <span class="bg-gray-200 dark:bg-gray-600 dark:text-gray-200 rounded-3px px-5px py-4px inline-block mr-3px">Enter</span>Open,
                 </p>
                 <p>
-                  <span class="bg-gray-200 dark:bg-gray-600 dark:text-white rounded-3px px-5px py-4px inline-block mr-3px">Ctrl + Enter</span>
+                  <span class="bg-gray-200 dark:bg-gray-600 dark:text-white rounded-3px px-5px py-4px inline-block mr-3px">command + Enter</span>
                   Open in new tab
                 </p>
               </div>
