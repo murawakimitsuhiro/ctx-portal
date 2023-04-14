@@ -73,21 +73,22 @@ function treeNestDepth(): number {
 <!--                links number : {{ Object.keys(relatedLinks) }}-->
 <!--              </div>-->
 <!--            </div>-->
-            <div>
-              {{ treeNestDepth() }}
-<!--              nexted : {{ state.relatedDocuments.length // Object.keys(state.relatedDocuments[treeNestDepth()]) }}-->
-              nested {{ state.relatedDocuments.value.length }}
-            </div>
+
+<!--            <div>-->
+<!--              {{ treeNestDepth() }}-->
+<!--&lt;!&ndash;              nexted : {{ state.relatedDocuments.length // Object.keys(state.relatedDocuments[treeNestDepth()]) }}&ndash;&gt;-->
+<!--              nested {{ state.relatedDocuments.value.length }}-->
+<!--            </div>-->
 
             <transition-group name="list" tag="div" class="relative overflow-hidden px-16px" :class="{ 'h-75vh': state.documents.value.length > 0}">
               <div
                 :key="0" class="
                   absolute overflow-y-scroll h-75vh grid grid-cols-1 gap-1 mt-16px bg-white
-                  transition-transform transition-[width] duration-300 ease-out
+                  transition-[width] duration-300 ease-out
                 "
                 :class="{
-                  'w-[calc(100%_-_16px)]': !(treeNestDepth() >= 1),
-                  'w-1/2': treeNestDepth() >= 1,
+                  'w-[calc(100%_-_16px)]': !(treeNestDepth() > 0),
+                  'w-1/2': treeNestDepth() > 0,
                 }"
                 scrollbar="~ rounded track-color-transparent thumb-color-gray-200"
               >
@@ -110,15 +111,14 @@ function treeNestDepth(): number {
                   </p>
                 </div>
               </diV>
-
-              <!-- dummy -->
+              <!-- related docs -->
               <div
                 v-for="(relatedDocs, index) in state.relatedDocuments.value" :key="index + 1"
                 class="
                   absolute overflow-y-scroll h-75vh w-1/2 grid grid-cols-1 gap-1 mt-16px mb-auto px-16px bg-white
-                  transition-all duration-300 ease-out
+                  transition-transform duration-300 ease-out
                 "
-                :class="{ 'left-1/2': index + 1 === treeNestDepth() }"
+                :class="{ 'left-1/2': index + 1 === treeNestDepth() || index + 2 === state.relatedDocuments.value.length }"
               >
                 <div v-for="(docs, link) of relatedDocs" class="mx-6px">
                   <div class="text-16px font-semibold text-slate-400">{{ link }}</div>

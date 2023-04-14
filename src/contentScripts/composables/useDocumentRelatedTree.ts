@@ -101,18 +101,19 @@ function relatedPages(doc: SearchedDocument | ScrapboxPage, selectedIndexes: num
     return [links]
 
   let counter = 0
-  let nextNestLinks: [string: ScrapboxPage[]] = []
+  let nextNestLinks: [string: ScrapboxPage[]][] = []
   Object.values(links).forEach((pages) => {
     pages.forEach((page) => {
       page.isSelected = false
       if (counter === selectedIndexes[0]) {
         page.isSelected = true
-        nextNestLinks = page.links
+        nextNestLinks = relatedPages(page, selectedIndexes.slice(1))
+        // nextNestLinks = page.links
       }
       counter++
     })
   })
-  return [links, nextNestLinks]
+  return [links].concat(nextNestLinks)
 }
 
 function relatedDocumentByIndex(scbPage: ScrapboxPage, index: number) {
