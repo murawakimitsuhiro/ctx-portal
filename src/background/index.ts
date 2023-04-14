@@ -6,7 +6,7 @@ import { captureVisibleTabAndSendNativeApp } from '~/logic'
 import { InnerMessageType, NativeMessageType } from '~/pkg/const/message'
 import type { SearchedDocument } from '~/pkg/entity/searched-document'
 import { NativeAppService } from '~/pkg/service/native-app'
-import { getRelation } from '~/pkg/service/scrapbox'
+import { getRelation, ScrapboxPage } from '~/pkg/service/scrapbox'
 import { getCurrentContextHistories } from '~/pkg/util/histories'
 
 export interface BackgroundState {
@@ -51,8 +51,18 @@ browser.runtime.onInstalled.addListener((): void => {
     )
     console.debug('documents ', state.searchedDocuments)
     sendStateForLatestActivatedTab()
+    fetchRelatedScbPage().then()
   })
 })
+
+async function fetchRelatedScbPage() {
+  // 試しに一つだけ取得
+  for (const pages of Object.values((state.searchedDocuments[0] as ScrapboxPage).links)) {
+    for (const page of pages)
+      page.links = (await getRelation(new URL(page.url))).links
+  }
+  sendStateForLatestActivatedTab()
+}
 
 browser.commands.onCommand.addListener(async (command) => {
   if (command === 'open-search-modal') {

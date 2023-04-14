@@ -58,5 +58,6 @@ function toScrapboxPage(json: any, projectName: string): ScrapboxPage {
     texts: json.descriptions.map(s => s.replace(/[\[\]]/g, '')).join(' '),
     image: json.image ?? null,
     links,
+    isSelected: false,
   }
 }

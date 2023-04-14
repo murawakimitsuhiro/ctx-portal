@@ -74,13 +74,15 @@ function treeNestDepth(): number {
 <!--              </div>-->
 <!--            </div>-->
             <div>
-              , {{ treeNestDepth() }}
+              {{ treeNestDepth() }}
+<!--              nexted : {{ state.relatedDocuments.length // Object.keys(state.relatedDocuments[treeNestDepth()]) }}-->
+              nested {{ state.relatedDocuments.value.length }}
             </div>
 
             <transition-group name="list" tag="div" class="relative overflow-hidden px-16px" :class="{ 'h-75vh': state.documents.value.length > 0}">
               <div
                 :key="0" class="
-                  absolute overflow-y-scroll h-75vh grid grid-cols-1 gap-1 mt-16px
+                  absolute overflow-y-scroll h-75vh grid grid-cols-1 gap-1 mt-16px bg-white
                   transition-transform transition-[width] duration-300 ease-out
                 "
                 :class="{
@@ -97,7 +99,7 @@ function treeNestDepth(): number {
                   <div class="flex items-center">
                     <img class="shrink-0 w-16px h-16px" v-if="!isPdf(doc)" src="https://developer.chrome.com/images/meta/favicon-32x32.png" alt="captured_image">
 <!--                    <i-ep-chrome-filled v-if="!isPdf(doc)" width="16" height="16" class="shrink-0 text-gray-800" />-->
-                    <i-fa-solid-file-pdf v-if="isPdf(doc)" width="16" height="16" class="shrink-0 text-gray-800" />
+                    <i-fa-solid-file-pdf v-if="isPdf(doc)" width="16" height="16" class="shrink-0 text-gray-600" />
                     <p class="mx-8px truncate text-base font-semibold my-0">{{ doc.title }}</p>
                     <p class="shrink-20 min-w-200px truncate text-slate-500 my-0 ml-auto text-right">
                       {{ decodedUrl(doc) }}
@@ -113,7 +115,7 @@ function treeNestDepth(): number {
               <div
                 v-for="(relatedDocs, index) in state.relatedDocuments.value" :key="index + 1"
                 class="
-                  absolute overflow-y-scroll h-75vh w-1/2 grid grid-cols-1 gap-1 mt-16px mb-auto px-16px
+                  absolute overflow-y-scroll h-75vh w-1/2 grid grid-cols-1 gap-1 mt-16px mb-auto px-16px bg-white
                   transition-all duration-300 ease-out
                 "
                 :class="{ 'left-1/2': index + 1 === treeNestDepth() }"
