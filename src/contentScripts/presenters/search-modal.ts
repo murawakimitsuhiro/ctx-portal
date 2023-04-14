@@ -43,12 +43,12 @@ export const SearchModalPresenter = () => {
     searchedDocs.value = docs
   }
 
-  const openSelectedDoc = (openInNewTab: Boolean = false) => {
-    console.debug('openSelectedDoc', openInNewTab, selectedDoc.value)
-  }
-
   const setSearchQuery = (query: string) => {
     searchQuery.value = query
+  }
+
+  const openSelectedDoc = (openInNewTab: Boolean = false) => {
+    console.debug('openSelectedDoc', openInNewTab, selectedDoc.value)
   }
 
   onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {

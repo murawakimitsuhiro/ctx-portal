@@ -1,10 +1,11 @@
 import browser from 'webextension-polyfill'
 // import { ref } from 'vue'
-import { Destination, onMessage, sendMessage } from 'webext-bridge'
+import { Destination, getCurrentContext, onMessage, sendMessage } from 'webext-bridge'
 import { captureVisibleTabAndSendNativeApp } from '~/logic'
 import { InnerMessageType, NativeMessageType } from '~/pkg/const/message'
 import type { SearchedDocument } from '~/pkg/entity/searched-document'
 import { NativeAppService } from '~/pkg/service/native-app'
+import { getCurrentContextHistories } from '~/pkg/util/histories'
 
 export interface BackgroundState {
   searchedDocuments: SearchedDocument[]
@@ -25,7 +26,10 @@ browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
   console.log('Extension installed')
   // sendTestCapture()
-  NativeAppService.shared().sendSearchContext() // ContextSearchのテストのために送っている
+  getCurrentContextHistories().then((histories) => {
+    const contextStr = histories.reduce((acc, cur) => `${acc + cur.title}\n`, '')
+    NativeAppService.shared().sendSearchContext(contextStr) // ContextSearchのテストのために送っている
+  })
   NativeAppService.shared().registerHandler(NativeMessageType.receive.SearchContext, (data) => {
     state.searchedDocuments = data.documents
     sendStateForLatestActivatedTab()
@@ -62,10 +66,19 @@ function sendStateForLatestActivatedTab() {
   }
 }
 
+function sendCurrentContextForNativeApp() {
+  getCurrentContextHistories().then((histories) => {
+    const contextStr = histories.reduce((acc, cur) => `${acc + cur.title}\n`, '')
+    NativeAppService.shared().sendSearchContext(contextStr)
+  })
+}
+
 onMessage(InnerMessageType.UserActivity, async ({ data, sender }) => {
   await captureVisibleTabAndSendNativeApp(sender.tabId, data)
 })
 
+// 1min に一度、現在のContextを更新している
+setInterval(sendCurrentContextForNativeApp, 1000 * 60)
 
 // setInterval(() => {
 //   sendMessage(InnerMessageType.UpdateBackgroundState, state, 'content-script')
