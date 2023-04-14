@@ -49,6 +49,11 @@ export const SearchModalPresenter = () => {
 
   const openSelectedDoc = (openInNewTab: Boolean = false) => {
     console.debug('openSelectedDoc', openInNewTab, selectedDoc.value)
+    const url = selectedDoc.value?.url
+    if (openInNewTab)
+      window.open(url!, '_blank')
+    else
+      window.location.href = url!
   }
 
   onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {

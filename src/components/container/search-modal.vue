@@ -44,7 +44,7 @@ function isSelectedDoc(docId: UUID): boolean {
                 @keydown.stop.exact
                 @keypress.stop.exact
                 @keyup.stop.exact
-                @keypress.ctrl.enter.exact.prevent="action.openSelectedDoc(true)"
+                @keydown.enter.meta.exact.prevent="action.openSelectedDoc(true)"
                 @keydown.down.prevent="action.setSelectionDown()"
                 @keydown.up.prevent="action.setSelectionUp()"
                 @keypress.enter.exact.prevent="action.openSelectedDoc()"
@@ -54,15 +54,15 @@ function isSelectedDoc(docId: UUID): boolean {
                 @keydown.ctrl.c.prevent="action.closeModal()"
               >
             </div>
-            <div class="overflow-y-scroll max-h-75vh grid grid-cols-1 gap-1 mt-4 px-4">
+            <div class="overflow-y-scroll max-h-75vh grid grid-cols-1 gap-1 mt-16px px-16px">
               <div
                 v-for="doc in state.searchedDocs.value" :key="doc.id"
-                class="bg-slate-70 p-3 rounded-6px"
+                class="bg-slate-70 p-12px rounded-6px"
                 :class="{ 'bg-slate-100': isSelectedDoc(doc.id) }"
               >
                 <div class="flex items-center">
                   <img class="shrink-0 w-16px h-16px" src="https://developer.chrome.com/images/meta/favicon-32x32.png" alt="captured_image">
-                  <p class="mx-2 truncate text-base font-semibold my-0">{{ doc.title }}</p>
+                  <p class="mx-8px truncate text-base font-semibold my-0">{{ doc.title }}</p>
                   <p class="shrink-20 min-w-200px truncate text-slate-500 my-0 ml-auto text-right">
                     {{ decodedUrl(doc) }}
                   </p>
