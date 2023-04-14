@@ -98,7 +98,7 @@ function relatedPages(doc: SearchedDocument | ScrapboxPage, selectedIndexes: num
 
   const links = (doc as ScrapboxPage).links
   if (selectedIndexes.length === 0)
-    return [links]
+    return Object.keys(links).length === 0 ? [] : [links]
 
   let counter = 0
   let nextNestLinks: [string: ScrapboxPage[]][] = []

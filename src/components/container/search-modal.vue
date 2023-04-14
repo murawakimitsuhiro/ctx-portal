@@ -2,7 +2,8 @@
 import 'uno.css'
 import { SearchModalPresenter } from '~/contentScripts/presenters/search-modal'
 import type { UUID } from '~/pkg/entity/basic'
-import { decodedUrl, isPdf } from '~/pkg/entity/searched-document'
+import { decodedUrl, isPdf, SearchedDocument } from '~/pkg/entity/searched-document'
+import { ScrapboxPage } from '~/pkg/service/scrapbox'
 
 const { state, action } = SearchModalPresenter()
 
@@ -22,14 +23,6 @@ watch(state.showModal, async(next, _) => {
 function treeNestDepth(): number {
   return state.relatedDocuments.value.length
 }
-
-// function currentSelectedIndexForDebug(): number {
-//   for (const [idx, doc] of Object.entries(state.documents.value)) {
-//     if (doc.isSelected)
-//       return Number(idx)
-//   }
-//   return 0
-// }
 </script>
 
 <template>
@@ -66,20 +59,11 @@ function treeNestDepth(): number {
                 @keydown.ctrl.c.prevent="action.closeModal()"
               >
             </div>
-
-<!--            <div>-->
-<!--              related page count : {{ state.relatedDocuments.value.length }}-->
-<!--              <div v-for="relatedLinks in state.relatedDocuments.value">-->
-<!--                links number : {{ Object.keys(relatedLinks) }}-->
-<!--              </div>-->
-<!--            </div>-->
-
 <!--            <div>-->
 <!--              {{ treeNestDepth() }}-->
-<!--&lt;!&ndash;              nexted : {{ state.relatedDocuments.length // Object.keys(state.relatedDocuments[treeNestDepth()]) }}&ndash;&gt;-->
-<!--              nested {{ state.relatedDocuments.value.length }}-->
+<!--              nexted : {{ state.relatedDocuments.length // Object.keys(state.relatedDocuments[treeNestDepth()]) }}-->
+<!--              nested {{ state.relatedDocuments.value.map(rd => Object.keys(rd).length).join(', ') }}-->
 <!--            </div>-->
-
             <transition-group name="list" tag="div" class="relative overflow-hidden px-16px" :class="{ 'h-75vh': state.documents.value.length > 0}">
               <div
                 :key="0" class="
@@ -116,9 +100,12 @@ function treeNestDepth(): number {
                 v-for="(relatedDocs, index) in state.relatedDocuments.value" :key="index + 1"
                 class="
                   absolute overflow-y-scroll h-75vh w-1/2 grid grid-cols-1 gap-1 mt-16px mb-auto px-16px bg-white
-                  transition-transform duration-300 ease-out
+                  transition-all duration-300 ease-out
                 "
-                :class="{ 'left-1/2': index + 1 === treeNestDepth() || index + 2 === state.relatedDocuments.value.length }"
+                :class="{
+                  'left-0': !(index + 1 === treeNestDepth()),
+                  'left-1/2': index + 1 === treeNestDepth(),
+                }"
               >
                 <div v-for="(docs, link) of relatedDocs" class="mx-6px">
                   <div class="text-16px font-semibold text-slate-400">{{ link }}</div>
