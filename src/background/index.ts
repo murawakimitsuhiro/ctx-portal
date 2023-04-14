@@ -1,10 +1,12 @@
 import browser from 'webextension-polyfill'
 // import { ref } from 'vue'
-import { Destination, getCurrentContext, onMessage, sendMessage } from 'webext-bridge'
+import type { Destination } from 'webext-bridge'
+import { onMessage, sendMessage } from 'webext-bridge'
 import { captureVisibleTabAndSendNativeApp } from '~/logic'
 import { InnerMessageType, NativeMessageType } from '~/pkg/const/message'
 import type { SearchedDocument } from '~/pkg/entity/searched-document'
 import { NativeAppService } from '~/pkg/service/native-app'
+import { getRelation } from '~/pkg/service/scrapbox'
 import { getCurrentContextHistories } from '~/pkg/util/histories'
 
 export interface BackgroundState {
@@ -25,13 +27,29 @@ async function currentActiveTabDestination(): Promise<Destination> {
 browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
   console.log('Extension installed')
+
   // sendTestCapture()
   getCurrentContextHistories().then((histories) => {
     const contextStr = histories.reduce((acc, cur) => `${acc + cur.title}\n`, '')
     NativeAppService.shared().sendSearchContext(contextStr) // ContextSearchのテストのために送っている
   })
-  NativeAppService.shared().registerHandler(NativeMessageType.receive.SearchContext, (data) => {
-    state.searchedDocuments = data.documents
+  NativeAppService.shared().registerHandler(NativeMessageType.receive.SearchContext, async (data) => {
+    state.searchedDocuments = await Promise.all(
+      data.documents.map(async (doc) => {
+        const url = new URL(doc.url)
+        if (url.hostname === 'scrapbox.io') {
+          try {
+            const scbPage = await getRelation(url)
+            return scbPage
+          }
+          catch (e) {
+            return doc
+          }
+        }
+        return doc
+      }),
+    )
+    console.debug('documents ', state.searchedDocuments)
     sendStateForLatestActivatedTab()
   })
 })
