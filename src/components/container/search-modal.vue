@@ -19,9 +19,13 @@ watch(state.showModal, async(next, _) => {
     searchInput.value.focus()
 })
 
-// function isSelectedDoc(docId: UUID): boolean {
-//   return state.selectedDoc.value?.id === docId
-// }
+function currentSelectedIndexForDebug(): number {
+  for (const [idx, doc] of Object.entries(state.documents.value)) {
+    if (doc.isSelected)
+      return Number(idx)
+  }
+  return -1
+}
 </script>
 
 <template>
@@ -55,31 +59,69 @@ watch(state.showModal, async(next, _) => {
               >
             </div>
 
+<!--            <div>-->
+<!--              related page count : {{ state.relatedDocuments.value.length }}-->
+<!--              <div v-for="relatedLinks in state.relatedDocuments.value">-->
+<!--                links number : {{ Object.keys(relatedLinks) }}-->
+<!--              </div>-->
+<!--            </div>-->
             <div>
-              related page count : {{ state.relatedDocuments.value.length }}
-              <div v-for="relatedLinks in state.relatedDocuments.value">
-                links number : {{ Object.keys(relatedLinks) }}
-              </div>
+              {{ currentSelectedIndexForDebug() }}
             </div>
 
-            <div class="overflow-y-scroll max-h-75vh grid grid-cols-1 gap-1 mt-16px px-16px">
+            <transition-group name="list" tag="div" class="relative overflow-hidden" :class="{ 'h-75vh': state.documents.value.length > 0}">
+<!--            <div class="flex"> -->
               <div
-                v-for="doc in state.documents.value" :key="doc.id"
-                class="bg-slate-70 p-12px rounded-6px"
-                :class="{ 'bg-slate-100': doc.isSelected }"
+                :key="0" class="
+                  absolute overflow-y-scroll h-75vh grid grid-cols-1 gap-1 mt-16px px-16px
+                  transition-[width] ease-out duration-300
+                "
+                :class="{
+                  'w-full': !(currentSelectedIndexForDebug() === 2),
+                  'w-1/2': currentSelectedIndexForDebug() === 2,
+                }"
               >
-                <div class="flex items-center">
-                  <img class="shrink-0 w-16px h-16px" src="https://developer.chrome.com/images/meta/favicon-32x32.png" alt="captured_image">
-                  <p class="mx-8px truncate text-base font-semibold my-0">{{ doc.title }}</p>
-                  <p class="shrink-20 min-w-200px truncate text-slate-500 my-0 ml-auto text-right">
-                    {{ decodedUrl(doc) }}
+                <div
+                  v-for="doc in state.documents.value" :key="doc.id"
+                  class="bg-slate-70 p-12px rounded-6px"
+                  :class="{ 'bg-slate-100': doc.isSelected }"
+                >
+                  <div class="flex items-center">
+                    <img class="shrink-0 w-16px h-16px" src="https://developer.chrome.com/images/meta/favicon-32x32.png" alt="captured_image">
+                    <p class="mx-8px truncate text-base font-semibold my-0">{{ doc.title }}</p>
+                    <p class="shrink-20 min-w-200px truncate text-slate-500 my-0 ml-auto text-right">
+                      {{ decodedUrl(doc) }}
+                    </p>
+                  </div>
+                  <p v-if="doc.texts && doc.texts.length > 0" class="truncate my-0 mt-1">
+                    {{ doc.texts }}
                   </p>
                 </div>
-                <p v-if="doc.texts && doc.texts.length > 0" class="truncate my-0 mt-1">
-                  {{ doc.texts }}
-                </p>
-              </div>
-            </diV>
+              </diV>
+
+              <!-- dummy -->
+              <div v-if="currentSelectedIndexForDebug() === 2"
+                   class="absolute overflow-y-scroll h-75vh w-1/2 grid grid-cols-1 gap-1 mt-16px px-16px">
+                <div
+                  v-for="doc in state.documents.value" :key="doc.id"
+                  class="bg-slate-70 p-12px rounded-6px"
+                  :class="{ 'bg-slate-100': doc.isSelected }"
+                >
+                  <div class="flex items-center">
+                    <img class="shrink-0 w-16px h-16px" src="https://developer.chrome.com/images/meta/favicon-32x32.png" alt="captured_image">
+                    <p class="mx-8px truncate text-base font-semibold my-0">{{ doc.title }}</p>
+                    <p class="shrink-20 min-w-200px truncate text-slate-500 my-0 ml-auto text-right">
+                      {{ decodedUrl(doc) }}
+                    </p>
+                  </div>
+                  <p v-if="doc.texts && doc.texts.length > 0" class="truncate my-0 mt-1">
+                    {{ doc.texts }}
+                  </p>
+                </div>
+              </diV>
+
+<!--              </div>-->
+            </transition-group>
 
 <!--            <div v-for="(docs, index) in state.documents.value">-->
 <!--            </div>-->
@@ -122,4 +164,31 @@ watch(state.showModal, async(next, _) => {
 .fade-enter-from, .fade-leave-to {
     opacity: 0;
 }
+
+
+.list-enter-active,
+.list-leave-active {
+	transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+	opacity: 0;
+	transform: translateY(-10px);
+}
+/*.slide-enter-to {*/
+/*    transition: transform 0.3s ease-out;*/
+/*    transform: translateX(0px);*/
+/*}*/
+/*.slide-enter-from {*/
+/*    transform: translateX(250px);*/
+/*}*/
+
+/*.slide-leave-to {*/
+/*    transition: transform 0.3s ease-out;*/
+/*    transform: translateX(250px);*/
+/*}*/
+/*.slide-leave-from {*/
+/*    transform: translateX(0px);*/
+/*}*/
 </style>

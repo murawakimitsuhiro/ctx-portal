@@ -1,8 +1,6 @@
 import { onMessage } from 'webext-bridge'
 import { useDocumentRelatedTree } from '~/contentScripts/composables/useDocumentRelatedTree'
 import { InnerMessageType } from '~/pkg/const/message'
-import type { SearchedDocument } from '~/pkg/entity/searched-document'
-
 
 export const SearchModalPresenter = () => {
   const documentTree = useDocumentRelatedTree()
@@ -30,19 +28,14 @@ export const SearchModalPresenter = () => {
     //   window.location.href = url!
   }
 
-  // const setSelectionDown = () => _documentTree.setSelectionDown()
-  // const setSelectionUp = () => _documentTree.setSelectionUp()
-
   onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {
     console.debug('updated background state (presenter)', data.searchedDocuments)
-    // _setSearchedDocs(data.searchedDocuments)
     documentTree.setDocuments(data.searchedDocuments)
   })
 
   onMessage(InnerMessageType.OnOpenSearchModal, ({ data }) => {
     showModal.value = !showModal.value
     documentTree.setDocuments(data.searchedDocuments)
-    // _setSearchedDocs(data.searchedDocuments)
   })
 
   return {
@@ -50,8 +43,6 @@ export const SearchModalPresenter = () => {
       documents: documentTree.documents,
       relatedDocuments: documentTree.relatedDocuments,
       showModal: readonly(showModal),
-      // searchedDocs: readonly(searchedDocs),
-      // selectedDoc: readonly(selectedDoc),
       searchQuery: readonly(searchQuery),
     },
     action: {

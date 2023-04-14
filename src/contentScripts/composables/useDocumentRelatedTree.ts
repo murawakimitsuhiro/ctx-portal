@@ -12,7 +12,6 @@ export const useDocumentRelatedTree = () => {
   })
 
   const documents = computed<SearchedDocument[]>(() => {
-    console.debug('documents')
     if (_lastHierarchy.value < 0)
       return _documents.value
     return _documents.value.map((doc, index) => {
