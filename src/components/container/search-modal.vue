@@ -24,7 +24,7 @@ function currentSelectedIndexForDebug(): number {
     if (doc.isSelected)
       return Number(idx)
   }
-  return -1
+  return 0
 }
 </script>
 
@@ -70,15 +70,14 @@ function currentSelectedIndexForDebug(): number {
             </div>
 
             <transition-group name="list" tag="div" class="relative overflow-hidden" :class="{ 'h-75vh': state.documents.value.length > 0}">
-<!--            <div class="flex"> -->
               <div
                 :key="0" class="
                   absolute overflow-y-scroll h-75vh grid grid-cols-1 gap-1 mt-16px px-16px
-                  transition-[width] ease-out duration-300
+                  transition-transform transition-[width] duration-300 ease-out
                 "
                 :class="{
-                  'w-full': !(currentSelectedIndexForDebug() === 2),
-                  'w-1/2': currentSelectedIndexForDebug() === 2,
+                  'w-full': !(currentSelectedIndexForDebug() >= 1),
+                  'w-1/2': currentSelectedIndexForDebug() >= 1,
                 }"
               >
                 <div
@@ -100,8 +99,14 @@ function currentSelectedIndexForDebug(): number {
               </diV>
 
               <!-- dummy -->
-              <div v-if="currentSelectedIndexForDebug() === 2"
-                   class="absolute overflow-y-scroll h-75vh w-1/2 grid grid-cols-1 gap-1 mt-16px px-16px">
+              <div
+                v-for="n of currentSelectedIndexForDebug()" :key="n + 1"
+                class="
+                  absolute overflow-y-scroll h-75vh w-1/2 grid grid-cols-1 gap-1 mt-16px px-16px
+                  transition-all duration-300 ease-out
+                "
+                :class="{ 'left-1/2': n === currentSelectedIndexForDebug() }"
+              >
                 <div
                   v-for="doc in state.documents.value" :key="doc.id"
                   class="bg-slate-70 p-12px rounded-6px"
@@ -119,8 +124,6 @@ function currentSelectedIndexForDebug(): number {
                   </p>
                 </div>
               </diV>
-
-<!--              </div>-->
             </transition-group>
 
 <!--            <div v-for="(docs, index) in state.documents.value">-->
@@ -165,17 +168,17 @@ function currentSelectedIndexForDebug(): number {
     opacity: 0;
 }
 
-
 .list-enter-active,
 .list-leave-active {
-	transition: all 0.5s ease;
+    transition: all 0.3s ease-out;
 }
 
 .list-enter-from,
 .list-leave-to {
-	opacity: 0;
-	transform: translateY(-10px);
+    opacity: 0;
+    transform: translateX(100%);
 }
+
 /*.slide-enter-to {*/
 /*    transition: transform 0.3s ease-out;*/
 /*    transform: translateX(0px);*/
