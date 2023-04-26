@@ -24,11 +24,13 @@ export const SearchModalPresenter = () => {
     if (documentTree.focusedDocument.value === null)
       return
 
-    const url = openUrl(documentTree.focusedDocument.value)
-    if (openInNewTab)
-      window.open(url!, '_blank')
-    else
-      window.location.href = url!
+    openUrl(documentTree.focusedDocument.value)
+      .then((url) => {
+        if (openInNewTab)
+          window.open(url!, '_blank')
+        else
+          window.location.href = url!
+      })
   }
 
   onMessage(InnerMessageType.UpdateBackgroundState, ({ data }) => {

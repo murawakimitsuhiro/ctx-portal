@@ -19,10 +19,17 @@ export function isPdf(document: SearchedDocument): boolean {
   return url.pathname.includes('mrwk-space') || url.hostname.includes('drive.google.com')
 }
 
-export function openUrl(document: SearchedDocument): string {
-  if (!isPdf(document))
+export async function openUrl(document: SearchedDocument): Promise<string> {
+  const url = new URL(document.url)
+  if (!isPdf(document) || url.hostname.includes('drive.google.com'))
     return document.url
 
-  return 'https://google.com'
+  if (url.pathname.includes('mrwk-space')) {
+    const res = await fetch(`${document.url.replace('scrapbox.io', 'scrapbox.io/api/code')}/meta.json`)
+    if (!res.ok)
+      return 'https://scrapbox.io/mrwk-space/'
+    const meta = await res.json()
+    return `https://drive.google.com/open?id=${meta.id}`
+  }
 }
 
